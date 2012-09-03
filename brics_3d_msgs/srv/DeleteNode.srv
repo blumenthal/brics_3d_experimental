@@ -1,0 +1,4 @@
+#bool deleteNode(unsigned int id);
+uint32 id
+---
+bool succeeded

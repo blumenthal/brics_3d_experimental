@@ -1,0 +1,8 @@
+#bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+uint32 parentId
+Attribute[] attributes
+geometry_msgs/TransformStamped transform
+time stamp
+---
+uint32 assignedId
+bool succeeded 

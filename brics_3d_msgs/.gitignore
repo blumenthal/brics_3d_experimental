@@ -1,0 +1,9 @@
+/bin
+/bin/*      
+/build
+/msg_gen
+/srv_gen
+/docs
+/src/brics_3d_msgs/*
+/src/brics_3d_msgs/srv/*
+/src/brics_3d_msgs/msg/*

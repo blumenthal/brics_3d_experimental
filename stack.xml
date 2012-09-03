@@ -1,0 +1,9 @@
+<stack>
+  <description brief="brics_3d_experimental">brics_3d_experimental</description>
+  <author>Maintained by sblume</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/brics_3d_experimental</url>
+  <depend stack="ros" />
+
+</stack>

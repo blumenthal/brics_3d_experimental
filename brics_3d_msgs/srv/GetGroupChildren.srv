@@ -1,0 +1,5 @@
+#bool getGroupChildren(unsigned int id, vector<unsigned int>& childIds);
+uint32 id
+---
+uint32[] childIds 
+bool succeeded 

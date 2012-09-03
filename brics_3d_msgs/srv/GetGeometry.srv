@@ -1,0 +1,6 @@
+#bool getGeometry(unsigned int id, Shape::ShapePtr& shape, TimeStamp& timeStamp);
+uint32 id
+---
+time stamp
+arm_navigation_msgs/Shape shape
+bool succeeded 

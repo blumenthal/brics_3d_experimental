@@ -1,0 +1,8 @@
+#bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp);
+uint32 parentId
+Attribute[] attributes
+arm_navigation_msgs/Shape shape
+time stamp
+---
+uint32 assignedId
+bool succeeded 

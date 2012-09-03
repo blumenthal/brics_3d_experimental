@@ -1,0 +1,6 @@
+#bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+uint32 id
+geometry_msgs/TransformStamped transform
+time stamp
+---
+bool succeeded 

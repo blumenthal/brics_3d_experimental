@@ -1,0 +1,5 @@
+#bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
+uint32 id
+Attribute[] newAttributes
+---
+bool succeeded 

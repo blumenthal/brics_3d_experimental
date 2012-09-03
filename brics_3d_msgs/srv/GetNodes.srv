@@ -1,0 +1,5 @@
+#bool getNodes(vector<Attribute> attributes, vector<unsigned int>& ids);
+Attribute[] attributes
+---
+uint32[] ids 
+bool succeeded  

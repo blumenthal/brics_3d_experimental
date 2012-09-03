@@ -1,0 +1,5 @@
+#bool getNodeAttributes(unsigned int id, vector<Attribute>& attributes);
+uint32 id
+---
+Attribute[] attributes
+bool succeeded 

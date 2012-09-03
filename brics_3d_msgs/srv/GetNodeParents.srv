@@ -1,0 +1,5 @@
+#bool getNodeParents(unsigned int id, vector<unsigned int>& parentIds);
+uint32 id
+---
+uint32[] parentIds 
+bool succeeded  

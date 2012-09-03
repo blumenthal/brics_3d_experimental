@@ -1,0 +1,3 @@
+#unsigned int getRootId();
+---
+uint32 rootId

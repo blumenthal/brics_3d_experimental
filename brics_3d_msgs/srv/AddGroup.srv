@@ -1,0 +1,6 @@
+#bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes);
+uint32 parentId
+Attribute[] attributes
+---
+uint32 assignedId
+bool succeeded
