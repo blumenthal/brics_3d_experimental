@@ -43,7 +43,7 @@ rosbuild_add_executable(world_model_duplication_node src/brics_3d_ros/WorldModel
 IF(USE_OSG)
     target_link_libraries(world_model_duplication_node brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
 ELSE(USE_OSG)
-    target_link_libraries(world_model_duplication_nodebrics3d_world_model brics3d_util brics3d_core)
+    target_link_libraries(world_model_duplication_node brics3d_world_model brics3d_util brics3d_core)
 ENDIF(USE_OSG) 
 
 rosbuild_add_executable(world_model_sample_queries src/examples/world_model_sample_queries.cpp)
