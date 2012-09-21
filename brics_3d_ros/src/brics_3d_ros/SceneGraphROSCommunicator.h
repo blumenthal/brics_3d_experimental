@@ -59,14 +59,27 @@ public:
 	bool deleteNode(unsigned int id);
 	bool addParent(unsigned int id, unsigned int parentId);
 
+//	void addIdToSubGraphBlacklist(unsigned int subGraphId);
+//	void setEnableBlackList(bool enableBlackList);
+//	bool getEnableBlackList();
+
 protected:
 
 	void initialize();
+//	bool isInABlacklistedSubGraph();
 
 	ros::NodeHandle node;
 
 	std::stringstream serviceName;
 	std::string serviceNameSpace;
+
+	/**
+	 * Subgraphs in this list (spefifies be the ID of the subgrapghs root node) will be ignored.
+	 * To use this feature make shure enableBlackList is set to true;
+	 */
+	std::vector<unsigned int> subGraphBlackList;
+
+	bool enableBlackList;
 
 //	/* ROS Queries */
 //	ros::ServiceClient getRootIdClient;

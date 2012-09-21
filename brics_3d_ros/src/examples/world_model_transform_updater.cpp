@@ -141,11 +141,11 @@ int main(int argc, char **argv)
 
 		/* check how many nodes with certain attributes are stored */
 		getNodesQuery.request.attributes.resize(1);
-//		getNodesQuery.request.attributes[0].key = "tf";
-//		getNodesQuery.request.attributes[0].value = "some_tf";
-		getNodesQuery.request.attributes[0].key = "name";
+		getNodesQuery.request.attributes[0].key = "tf";
+		getNodesQuery.request.attributes[0].value = "some_tf";
+//		getNodesQuery.request.attributes[0].key = "name";
 //		getNodesQuery.request.attributes[0].value = "robot_to_sensor_tf";
-		getNodesQuery.request.attributes[0].value = "world_to_robot_tf";
+//		getNodesQuery.request.attributes[0].value = "world_to_robot_tf";
 
 
 		if (!getNodesClient.call(getNodesQuery)) {

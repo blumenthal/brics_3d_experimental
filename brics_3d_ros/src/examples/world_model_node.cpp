@@ -32,6 +32,7 @@
 	#include <worldModel/sceneGraph/OSGVisualizer.h>
 #endif
 
+using BRICS_3D::Logger;
 
 int main(int argc, char **argv)
 {
@@ -50,12 +51,14 @@ int main(int argc, char **argv)
 	BRICS_3D::RSG::DotVisualizer dbgObserver(&wm->scene);
 //	wm->scene.attachUpdateObserver(&dbgObserver);
 
-	BRICS_3D::RSG::SceneGraphROSCommunicator updater(n, "/worldModel/sampleListner/");
+	BRICS_3D::RSG::SceneGraphROSCommunicator updater(n, "/worldModel/brics_mm/");
 	wm->scene.attachUpdateObserver(&updater);
 
 	BRICS_3D::WorldModelQueryServer wmServer(n, wm);
 	wmServer.setServiceNameSpace("/worldModel/");
 	wmServer.initialize();
+
+	LOG(INFO) << "Ready.";
 
 	ros::MultiThreadedSpinner spinner(2);
 	spinner.spin();

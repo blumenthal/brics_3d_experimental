@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 	addGeometricNodeUpdate.request.shape.type = arm_navigation_msgs::Shape::CYLINDER;
 	addGeometricNodeUpdate.request.shape.dimensions.resize(2);
 	addGeometricNodeUpdate.request.shape.dimensions[0] = 0.1;
-	addGeometricNodeUpdate.request.shape.dimensions[1] = 0.7;
+	addGeometricNodeUpdate.request.shape.dimensions[1] = 1.5;
 	addGeometricNodeUpdate.request.stamp = ros::Time::now();
 
 	if (!addGeometricNodeClient.call(addGeometricNodeUpdate)) {

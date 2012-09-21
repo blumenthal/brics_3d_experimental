@@ -19,6 +19,7 @@
 
 #include "SceneGraphROSCommunicator.h"
 #include "core/Logger.h"
+#include "worldModel/sceneGraph/SubGraphChecker.h"
 
 #include "SceneGraphTypeCasts.h"
 
@@ -35,7 +36,7 @@ SceneGraphROSCommunicator::SceneGraphROSCommunicator(ros::NodeHandle n, std::str
 }
 
 SceneGraphROSCommunicator::~SceneGraphROSCommunicator() {
-	// TODO Auto-generated destructor stub
+
 }
 
 void SceneGraphROSCommunicator::initialize() {
@@ -110,6 +111,8 @@ void SceneGraphROSCommunicator::initialize() {
 	brics_3d_msgs::DeleteNode deleteNodeUpdate;
 	brics_3d_msgs::AddParent addParentUpdate;
 
+	LOG(DEBUG) << "SceneGraphROSCommunicator: Initialization done.";
+
 }
 
 bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
@@ -167,6 +170,20 @@ bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned
 
 bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding GeometricNode";
+
+	bool noSharing = false;
+	Attribute noSharingTag("rsgInfo","non_shared");
+	noSharing = attributeListContainsAttribute(attributes, noSharingTag);
+
+	if (noSharing) { //FIXME IDs get out of sync...
+		LOG(DEBUG) << "SceneGraphROSCommunicator: GeometricNode has non_shared tag. Skipping it.";
+		BRICS_3D::RSG::Box::BoxPtr dummyBox(new BRICS_3D::RSG::Box());
+		dummyBox->setSizeX(0.01);
+		dummyBox->setSizeY(0.01);
+		dummyBox->setSizeZ(0.01);
+		shape = boost::dynamic_pointer_cast<RSG::Shape>(dummyBox);
+		return true;
+	}
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addGeometricNodeUpdate.request.attributes);
 	SceneGraphTypeCasts::convertShapeToRosMsg(shape, addGeometricNodeUpdate.request.shape);
@@ -239,6 +256,21 @@ bool SceneGraphROSCommunicator::addParent(unsigned int id, unsigned int parentId
 	return true;
 }
 
+//void SceneGraphROSCommunicator::addIdToSubGraphBlacklist(unsigned int subGraphId) {
+//	subGraphBlackList.push_back(subGraphId);
+//}
+//
+//void SceneGraphROSCommunicator::setEnableBlackList(bool enableBlackList) {
+//	this->enableBlackList = enableBlackList;
+//}
+//
+//bool SceneGraphROSCommunicator::getEnableBlackList() {
+//	return enableBlackList;
+//}
+//
+//bool isInABlacklistedSubGraph() {
+//	return false;
+//}
 
 }
 
