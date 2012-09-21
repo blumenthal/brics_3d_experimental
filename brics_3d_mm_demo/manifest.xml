@@ -1,0 +1,17 @@
+<package>
+  <description brief="brics_3d_mm_demo">
+
+     brics_3d_mm_demo
+
+  </description>
+  <author>sblume</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/brics_3d_mm_demo</url>
+
+  <depend package="brics_3d_ros" />
+  <depend package="brics_mm_ros" />
+
+</package>
+
+
