@@ -8,14 +8,16 @@ import roslib.rostime
 import brics_3d_msgs.msg
 
 class AddGeometricNodeRequest(roslib.message.Message):
-  _md5sum = "9f26cb8aa0f845125473eb350105d92a"
+  _md5sum = "828c68defd421788e0ed93c79b1b616f"
   _type = "brics_3d_msgs/AddGeometricNodeRequest"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """
 uint32 parentId
+uint32 assignedId
 Attribute[] attributes
 arm_navigation_msgs/Shape shape
 time stamp
+bool forcedId
 
 ================================================================================
 MSG: brics_3d_msgs/Attribute
@@ -65,8 +67,8 @@ float64 y
 float64 z
 
 """
-  __slots__ = ['parentId','attributes','shape','stamp']
-  _slot_types = ['uint32','brics_3d_msgs/Attribute[]','arm_navigation_msgs/Shape','time']
+  __slots__ = ['parentId','assignedId','attributes','shape','stamp','forcedId']
+  _slot_types = ['uint32','uint32','brics_3d_msgs/Attribute[]','arm_navigation_msgs/Shape','time','bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -76,7 +78,7 @@ float64 z
     changes.  You cannot mix in-order arguments and keyword arguments.
     
     The available fields are:
-       parentId,attributes,shape,stamp
+       parentId,assignedId,attributes,shape,stamp,forcedId
     
     @param args: complete set of field values, in .msg order
     @param kwds: use keyword arguments corresponding to message field names
@@ -87,17 +89,23 @@ float64 z
       #message fields cannot be None, assign default values for those that are
       if self.parentId is None:
         self.parentId = 0
+      if self.assignedId is None:
+        self.assignedId = 0
       if self.attributes is None:
         self.attributes = []
       if self.shape is None:
         self.shape = arm_navigation_msgs.msg.Shape()
       if self.stamp is None:
         self.stamp = roslib.rostime.Time()
+      if self.forcedId is None:
+        self.forcedId = False
     else:
       self.parentId = 0
+      self.assignedId = 0
       self.attributes = []
       self.shape = arm_navigation_msgs.msg.Shape()
       self.stamp = roslib.rostime.Time()
+      self.forcedId = False
 
   def _get_types(self):
     """
@@ -112,7 +120,8 @@ float64 z
     @type  buff: StringIO
     """
     try:
-      buff.write(_struct_I.pack(self.parentId))
+      _x = self
+      buff.write(_struct_2I.pack(_x.parentId, _x.assignedId))
       length = len(self.attributes)
       buff.write(_struct_I.pack(length))
       for val1 in self.attributes:
@@ -137,7 +146,7 @@ float64 z
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
       _x = self
-      buff.write(_struct_2I.pack(_x.stamp.secs, _x.stamp.nsecs))
+      buff.write(_struct_2IB.pack(_x.stamp.secs, _x.stamp.nsecs, _x.forcedId))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -153,9 +162,10 @@ float64 z
       if self.stamp is None:
         self.stamp = roslib.rostime.Time()
       end = 0
+      _x = self
       start = end
-      end += 4
-      (self.parentId,) = _struct_I.unpack(str[start:end])
+      end += 8
+      (_x.parentId, _x.assignedId,) = _struct_2I.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -205,8 +215,9 @@ float64 z
         self.shape.vertices.append(val1)
       _x = self
       start = end
-      end += 8
-      (_x.stamp.secs, _x.stamp.nsecs,) = _struct_2I.unpack(str[start:end])
+      end += 9
+      (_x.stamp.secs, _x.stamp.nsecs, _x.forcedId,) = _struct_2IB.unpack(str[start:end])
+      self.forcedId = bool(self.forcedId)
       self.stamp.canon()
       return self
     except struct.error as e:
@@ -222,7 +233,8 @@ float64 z
     @type  numpy module
     """
     try:
-      buff.write(_struct_I.pack(self.parentId))
+      _x = self
+      buff.write(_struct_2I.pack(_x.parentId, _x.assignedId))
       length = len(self.attributes)
       buff.write(_struct_I.pack(length))
       for val1 in self.attributes:
@@ -247,7 +259,7 @@ float64 z
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
       _x = self
-      buff.write(_struct_2I.pack(_x.stamp.secs, _x.stamp.nsecs))
+      buff.write(_struct_2IB.pack(_x.stamp.secs, _x.stamp.nsecs, _x.forcedId))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -265,9 +277,10 @@ float64 z
       if self.stamp is None:
         self.stamp = roslib.rostime.Time()
       end = 0
+      _x = self
       start = end
-      end += 4
-      (self.parentId,) = _struct_I.unpack(str[start:end])
+      end += 8
+      (_x.parentId, _x.assignedId,) = _struct_2I.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -317,8 +330,9 @@ float64 z
         self.shape.vertices.append(val1)
       _x = self
       start = end
-      end += 8
-      (_x.stamp.secs, _x.stamp.nsecs,) = _struct_2I.unpack(str[start:end])
+      end += 9
+      (_x.stamp.secs, _x.stamp.nsecs, _x.forcedId,) = _struct_2IB.unpack(str[start:end])
+      self.forcedId = bool(self.forcedId)
       self.stamp.canon()
       return self
     except struct.error as e:
@@ -326,6 +340,7 @@ float64 z
 
 _struct_I = roslib.message.struct_I
 _struct_b = struct.Struct("<b")
+_struct_2IB = struct.Struct("<2IB")
 _struct_2I = struct.Struct("<2I")
 _struct_3d = struct.Struct("<3d")
 """autogenerated by genmsg_py from AddGeometricNodeResponse.msg. Do not edit."""
@@ -443,6 +458,6 @@ _struct_I = roslib.message.struct_I
 _struct_IB = struct.Struct("<IB")
 class AddGeometricNode(roslib.message.ServiceDefinition):
   _type          = 'brics_3d_msgs/AddGeometricNode'
-  _md5sum = '340cacfd39c10b7cad1388d393cbc8b5'
+  _md5sum = '5b0084f8beb59d3e9f051f768a3b94ed'
   _request_class  = AddGeometricNodeRequest
   _response_class = AddGeometricNodeResponse

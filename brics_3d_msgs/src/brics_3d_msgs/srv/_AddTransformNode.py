@@ -8,14 +8,16 @@ import brics_3d_msgs.msg
 import std_msgs.msg
 
 class AddTransformNodeRequest(roslib.message.Message):
-  _md5sum = "830a4e570b77dea517ce1a29d29eaa5e"
+  _md5sum = "9f1902b873d8a64706cd6e64fa3b8425"
   _type = "brics_3d_msgs/AddTransformNodeRequest"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """
 uint32 parentId
+uint32 assignedId
 Attribute[] attributes
 geometry_msgs/TransformStamped transform
 time stamp
+bool forcedId
 
 ================================================================================
 MSG: brics_3d_msgs/Attribute
@@ -77,8 +79,8 @@ float64 z
 float64 w
 
 """
-  __slots__ = ['parentId','attributes','transform','stamp']
-  _slot_types = ['uint32','brics_3d_msgs/Attribute[]','geometry_msgs/TransformStamped','time']
+  __slots__ = ['parentId','assignedId','attributes','transform','stamp','forcedId']
+  _slot_types = ['uint32','uint32','brics_3d_msgs/Attribute[]','geometry_msgs/TransformStamped','time','bool']
 
   def __init__(self, *args, **kwds):
     """
@@ -88,7 +90,7 @@ float64 w
     changes.  You cannot mix in-order arguments and keyword arguments.
     
     The available fields are:
-       parentId,attributes,transform,stamp
+       parentId,assignedId,attributes,transform,stamp,forcedId
     
     @param args: complete set of field values, in .msg order
     @param kwds: use keyword arguments corresponding to message field names
@@ -99,17 +101,23 @@ float64 w
       #message fields cannot be None, assign default values for those that are
       if self.parentId is None:
         self.parentId = 0
+      if self.assignedId is None:
+        self.assignedId = 0
       if self.attributes is None:
         self.attributes = []
       if self.transform is None:
         self.transform = geometry_msgs.msg.TransformStamped()
       if self.stamp is None:
         self.stamp = roslib.rostime.Time()
+      if self.forcedId is None:
+        self.forcedId = False
     else:
       self.parentId = 0
+      self.assignedId = 0
       self.attributes = []
       self.transform = geometry_msgs.msg.TransformStamped()
       self.stamp = roslib.rostime.Time()
+      self.forcedId = False
 
   def _get_types(self):
     """
@@ -124,7 +132,8 @@ float64 w
     @type  buff: StringIO
     """
     try:
-      buff.write(_struct_I.pack(self.parentId))
+      _x = self
+      buff.write(_struct_2I.pack(_x.parentId, _x.assignedId))
       length = len(self.attributes)
       buff.write(_struct_I.pack(length))
       for val1 in self.attributes:
@@ -143,7 +152,7 @@ float64 w
       length = len(_x)
       buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_7d2I.pack(_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs))
+      buff.write(_struct_7d2IB.pack(_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs, _x.forcedId))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -159,9 +168,10 @@ float64 w
       if self.stamp is None:
         self.stamp = roslib.rostime.Time()
       end = 0
+      _x = self
       start = end
-      end += 4
-      (self.parentId,) = _struct_I.unpack(str[start:end])
+      end += 8
+      (_x.parentId, _x.assignedId,) = _struct_2I.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -199,8 +209,9 @@ float64 w
       self.transform.child_frame_id = str[start:end]
       _x = self
       start = end
-      end += 64
-      (_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs,) = _struct_7d2I.unpack(str[start:end])
+      end += 65
+      (_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs, _x.forcedId,) = _struct_7d2IB.unpack(str[start:end])
+      self.forcedId = bool(self.forcedId)
       self.stamp.canon()
       return self
     except struct.error as e:
@@ -216,7 +227,8 @@ float64 w
     @type  numpy module
     """
     try:
-      buff.write(_struct_I.pack(self.parentId))
+      _x = self
+      buff.write(_struct_2I.pack(_x.parentId, _x.assignedId))
       length = len(self.attributes)
       buff.write(_struct_I.pack(length))
       for val1 in self.attributes:
@@ -235,7 +247,7 @@ float64 w
       length = len(_x)
       buff.write(struct.pack('<I%ss'%length, length, _x))
       _x = self
-      buff.write(_struct_7d2I.pack(_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs))
+      buff.write(_struct_7d2IB.pack(_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs, _x.forcedId))
     except struct.error as se: self._check_types(se)
     except TypeError as te: self._check_types(te)
 
@@ -253,9 +265,10 @@ float64 w
       if self.stamp is None:
         self.stamp = roslib.rostime.Time()
       end = 0
+      _x = self
       start = end
-      end += 4
-      (self.parentId,) = _struct_I.unpack(str[start:end])
+      end += 8
+      (_x.parentId, _x.assignedId,) = _struct_2I.unpack(str[start:end])
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -293,16 +306,18 @@ float64 w
       self.transform.child_frame_id = str[start:end]
       _x = self
       start = end
-      end += 64
-      (_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs,) = _struct_7d2I.unpack(str[start:end])
+      end += 65
+      (_x.transform.transform.translation.x, _x.transform.transform.translation.y, _x.transform.transform.translation.z, _x.transform.transform.rotation.x, _x.transform.transform.rotation.y, _x.transform.transform.rotation.z, _x.transform.transform.rotation.w, _x.stamp.secs, _x.stamp.nsecs, _x.forcedId,) = _struct_7d2IB.unpack(str[start:end])
+      self.forcedId = bool(self.forcedId)
       self.stamp.canon()
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = roslib.message.struct_I
+_struct_7d2IB = struct.Struct("<7d2IB")
 _struct_3I = struct.Struct("<3I")
-_struct_7d2I = struct.Struct("<7d2I")
+_struct_2I = struct.Struct("<2I")
 """autogenerated by genmsg_py from AddTransformNodeResponse.msg. Do not edit."""
 import roslib.message
 import struct
@@ -418,6 +433,6 @@ _struct_I = roslib.message.struct_I
 _struct_IB = struct.Struct("<IB")
 class AddTransformNode(roslib.message.ServiceDefinition):
   _type          = 'brics_3d_msgs/AddTransformNode'
-  _md5sum = '34d47a7ea54081691093df15ad65fed2'
+  _md5sum = '1e9c67db185516cec3b9886f88b2f81f'
   _request_class  = AddTransformNodeRequest
   _response_class = AddTransformNodeResponse

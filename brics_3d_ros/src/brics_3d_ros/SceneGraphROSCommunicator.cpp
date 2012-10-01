@@ -115,7 +115,7 @@ void SceneGraphROSCommunicator::initialize() {
 
 }
 
-bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding Node";
 
 	//TODO: check if alredy there?
@@ -132,7 +132,7 @@ bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& ass
 	return true;
 }
 
-bool SceneGraphROSCommunicator::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes) {
+bool SceneGraphROSCommunicator::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding Group";
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addGroupUpdate.request.attributes);
@@ -148,7 +148,7 @@ bool SceneGraphROSCommunicator::addGroup(unsigned int parentId, unsigned int& as
 	return true;
 }
 
-bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding TransformNode";
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addTransformNodeUpdate.request.attributes);
@@ -168,7 +168,7 @@ bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned
 }
 
 
-bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp) {
+bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding GeometricNode";
 
 	bool noSharing = false;
