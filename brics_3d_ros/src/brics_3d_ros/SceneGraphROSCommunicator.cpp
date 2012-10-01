@@ -122,12 +122,22 @@ bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& ass
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addNodeUpdate.request.attributes);
 	addNodeUpdate.request.parentId = parentId;
 
+	/* We want to enforce generation of a new node with exactly this assignedId ID.
+	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
+	 */
+	addNodeUpdate.request.assignedId = assignedId;
+	addNodeUpdate.request.forcedId = true;
+
 	if (!addNodeCallbackClient.call(addNodeUpdate)) {
 		LOG(ERROR) << "Failed to call service AddNode";
 		return false;
 	}
 
+	if (assignedId != addNodeUpdate.response.assignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addNodeUpdate.response.assignedId;
+	}
 	assignedId = addNodeUpdate.response.assignedId;
+
 
 	return true;
 }
@@ -138,11 +148,20 @@ bool SceneGraphROSCommunicator::addGroup(unsigned int parentId, unsigned int& as
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addGroupUpdate.request.attributes);
 	addGroupUpdate.request.parentId = parentId;
 
+	/* We want to enforce generation of a new node with exactly this assignedId ID.
+	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
+	 */
+	addGroupUpdate.request.assignedId = assignedId;
+	addGroupUpdate.request.forcedId = true;
+
 	if (!addGroupCallbackClient.call(addGroupUpdate)) {
 		LOG(ERROR) << "Failed to call service AddGroup";
 		return false;
 	}
 
+	if (assignedId != addGroupUpdate.response.assignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addGroupUpdate.response.assignedId;
+	}
 	assignedId = addGroupUpdate.response.assignedId;
 
 	return true;
@@ -157,11 +176,20 @@ bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned
 	addTransformNodeUpdate.request.parentId = parentId;
 	addTransformNodeUpdate.request.stamp = ros::Time::now();
 
+	/* We want to enforce generation of a new node with exactly this assignedId ID.
+	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
+	 */
+	addTransformNodeUpdate.request.assignedId = assignedId;
+	addTransformNodeUpdate.request.forcedId = true;
+
 	if (!addTransformNodeCallbackClient.call(addTransformNodeUpdate)) {
 		LOG(ERROR) << "Failed to call service AddTransformNode";
 		return false;
 	}
 
+	if (assignedId != addTransformNodeUpdate.response.assignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addTransformNodeUpdate.response.assignedId;
+	}
 	assignedId = addTransformNodeUpdate.response.assignedId;
 
 	return true;
@@ -185,17 +213,28 @@ bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned
 		return true;
 	}
 
+
+
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addGeometricNodeUpdate.request.attributes);
 	SceneGraphTypeCasts::convertShapeToRosMsg(shape, addGeometricNodeUpdate.request.shape);
 
 	addGeometricNodeUpdate.request.parentId = parentId;
 	addGeometricNodeUpdate.request.stamp = ros::Time::now(); //FIXME
 
+	/* We want to enforce generation of a new node with exactly this assignedId ID.
+	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
+	 */
+	addGeometricNodeUpdate.request.assignedId = assignedId;
+	addGeometricNodeUpdate.request.forcedId = true;
+
 	if (!addGeometricNodeClient.call(addGeometricNodeUpdate)) {
 		LOG(ERROR) << "Failed to call service AddGeometricNodeUpdate";
 		return false;
 	}
 
+	if (assignedId != addGeometricNodeUpdate.response.assignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addGeometricNodeUpdate.response.assignedId;
+	}
 	return true;
 }
 
@@ -235,7 +274,7 @@ bool SceneGraphROSCommunicator::deleteNode(unsigned int id) {
 	deleteNodeUpdate.request.id = id;
 
 	if (!deleteNodeClient.call(deleteNodeUpdate)) {
-		LOG(ERROR) << "Failed to call service Delet Node";
+		LOG(ERROR) << "Failed to call service Delete Node";
 		return false;
 	}
 

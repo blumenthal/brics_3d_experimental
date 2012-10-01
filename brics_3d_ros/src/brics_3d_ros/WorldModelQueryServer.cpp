@@ -194,9 +194,10 @@ bool WorldModelQueryServer::getTransformForNodeCallback(brics_3d_msgs::GetTransf
 bool WorldModelQueryServer::addNodeCallback(brics_3d_msgs::AddNode::Request& request, brics_3d_msgs::AddNode::Response& response) {
 	vector<BRICS_3D::RSG::Attribute> attributes;
 	unsigned int assignedId;
+	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
-	response.succeeded = wm->scene.addNode(request.parentId, assignedId, attributes);
+	response.succeeded = wm->scene.addNode(request.parentId, assignedId, attributes, request.forcedId);
 
 	response.assignedId = assignedId;
 	return response.succeeded;
@@ -205,9 +206,11 @@ bool WorldModelQueryServer::addNodeCallback(brics_3d_msgs::AddNode::Request& req
 bool WorldModelQueryServer::addGroupCallback(brics_3d_msgs::AddGroup::Request& request, brics_3d_msgs::AddGroup::Response& response) {
 	unsigned int assignedId;
 	vector<BRICS_3D::RSG::Attribute> attributes;
+	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
-	response.succeeded = wm->scene.addGroup(request.parentId, assignedId, attributes);
+	response.succeeded = wm->scene.addGroup(request.parentId, assignedId, attributes, request.forcedId);
 
 	response.assignedId = assignedId;
 	return response.succeeded;
@@ -218,11 +221,13 @@ bool WorldModelQueryServer::addTransformNodeCallback(brics_3d_msgs::AddTransform
 	vector<BRICS_3D::RSG::Attribute> attributes;
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new BRICS_3D::HomogeneousMatrix44());
 	TimeStamp timeStamp;
+	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	SceneGraphTypeCasts::convertRosMsgToTransform(request.transform, transform);
 	SceneGraphTypeCasts::convertRosMsgToTimeStamp(request.stamp, timeStamp);
-	response.succeeded = wm->scene.addTransformNode(request.parentId, assignedId, attributes, transform, timeStamp);
+	response.succeeded = wm->scene.addTransformNode(request.parentId, assignedId, attributes, transform, timeStamp, request.forcedId);
 
 	response.assignedId = assignedId;
 	return response.succeeded;
@@ -233,6 +238,8 @@ bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometric
 	vector<BRICS_3D::RSG::Attribute> attributes;
 	Shape::ShapePtr shape;
 	TimeStamp timeStamp;
+	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	SceneGraphTypeCasts::convertRosMsgToShape(request.shape, shape);
@@ -240,7 +247,7 @@ bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometric
 //	box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
 //	assert(box!=0);
 	SceneGraphTypeCasts::convertRosMsgToTimeStamp(request.stamp, timeStamp);
-	response.succeeded = wm->scene.addGeometricNode(request.parentId, assignedId, attributes, shape, timeStamp);
+	response.succeeded = wm->scene.addGeometricNode(request.parentId, assignedId, attributes, shape, timeStamp, request.forcedId);
 
 	response.assignedId = assignedId;
 	return response.succeeded;
