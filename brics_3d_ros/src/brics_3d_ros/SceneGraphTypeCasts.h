@@ -21,12 +21,11 @@
 #define SCENEGRAPHTYPECASTS_H_
 
 /* BRICS_3D includes */
-#include <worldModel/sceneGraph/SceneGraphFacade.h>
-
-#include <worldModel/sceneGraph/Box.h>
-#include <worldModel/sceneGraph/Cylinder.h>
-#include <core/HomogeneousMatrix44.h>
-#include <core/Logger.h>
+#include <brics_3d/worldModel/sceneGraph/SceneGraphFacade.h>
+#include <brics_3d/worldModel/sceneGraph/Box.h>
+#include <brics_3d/worldModel/sceneGraph/Cylinder.h>
+#include <brics_3d/core/HomogeneousMatrix44.h>
+#include <brics_3d/core/Logger.h>
 
 /* BRICS_3D <-> ROS types */
 #include "brics_3d_msgs/GetRootId.h"
@@ -50,9 +49,9 @@
 
 #include <tf/tf.h>
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 /**
  * @brief Helper class to cast between BRICS_3D and ROS mesage types
@@ -91,21 +90,21 @@ public:
 		}
 	}
 
-	inline static void convertTimeStampToRosMsg(BRICS_3D::RSG::TimeStamp& timeStamp, ros::Time& convertedTimeStamp) {
+	inline static void convertTimeStampToRosMsg(brics_3d::rsg::TimeStamp& timeStamp, ros::Time& convertedTimeStamp) {
 		//not needed and not possible;
 	}
 
-	inline static void convertRosMsgToTimeStamp(ros::Time& timeStamp, BRICS_3D::RSG::TimeStamp& convertedTimeStamp) { //here we _have_ to create a new timestamp
+	inline static void convertRosMsgToTimeStamp(ros::Time& timeStamp, brics_3d::rsg::TimeStamp& convertedTimeStamp) { //here we _have_ to create a new timestamp
 //		if (convertedTimeStamp) {
 //			delete convertedTimeStamp;
 //			convertedTimeStamp = 0;
 //		}
-		BRICS_3D::RSG::TimeStamp tmpTimeStamp(timeStamp.toSec()*1000.0);
+		brics_3d::rsg::TimeStamp tmpTimeStamp(timeStamp.toSec()*1000.0);
 //		LOG(DEBUG) << "convertRosMsgToTimeStamp: " << timeStamp << " -> " << timeStamp.toSec()*1000.0;
 		convertedTimeStamp += tmpTimeStamp; //assumes default constructor;
 	}
 
-	inline static void convertTransformToRosMsg(BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform,  geometry_msgs::TransformStamped& convertedTransform){
+	inline static void convertTransformToRosMsg(brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transform,  geometry_msgs::TransformStamped& convertedTransform){
 
 		tf::Transform tmpTransform;
 		convertHomogeniousMatrixToTfTransform(transform, tmpTransform);
@@ -123,22 +122,22 @@ public:
 		convertedTransform.transform.rotation.w = tmpTransform.getRotation().getW();
 	}
 
-	inline static void convertRosMsgToTransform(geometry_msgs::TransformStamped transform, BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& convertedTransform){
+	inline static void convertRosMsgToTransform(geometry_msgs::TransformStamped transform, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& convertedTransform){
 		tf::StampedTransform tmpTransform;
 		tf::transformStampedMsgToTF(transform, tmpTransform);
 		convertTfTransformToHomogeniousMatrix(tmpTransform, convertedTransform);
 	}
 
-	inline static void convertShapeToRosMsg(BRICS_3D::RSG::Shape::ShapePtr shape, arm_navigation_msgs::Shape& convertedShape){
+	inline static void convertShapeToRosMsg(brics_3d::rsg::Shape::ShapePtr shape, arm_navigation_msgs::Shape& convertedShape){
 		LOG(DEBUG) << "convertShapeToRosMsg: ";
-		//		RSG::PointCloud<BRICS_3D::PointCloud3D>::PointCloudPtr pointCloud(new RSG::PointCloud<BRICS_3D::PointCloud3D>());
-//		pointCloud = boost::dynamic_pointer_cast<PointCloud<BRICS_3D::PointCloud3D> >(shape);
-//		RSG::Mesh<BRICS_3D::ITriangleMesh>::MeshPtr mesh(new RSG::Mesh<BRICS_3D::ITriangleMesh>());
-//		mesh = boost::dynamic_pointer_cast<RSG::Mesh<BRICS_3D::ITriangleMesh> >(shape);
-		RSG::Box::BoxPtr box(new RSG::Box());
-		box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
-		RSG::Cylinder::CylinderPtr cylinder(new RSG::Cylinder());
-		cylinder =  boost::dynamic_pointer_cast<RSG::Cylinder>(shape);
+		//		rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pointCloud(new rsg::PointCloud<brics_3d::PointCloud3D>());
+//		pointCloud = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(shape);
+//		rsg::Mesh<brics_3d::ITriangleMesh>::MeshPtr mesh(new rsg::Mesh<brics_3d::ITriangleMesh>());
+//		mesh = boost::dynamic_pointer_cast<rsg::Mesh<brics_3d::ITriangleMesh> >(shape);
+		rsg::Box::BoxPtr box(new rsg::Box());
+		box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
+		rsg::Cylinder::CylinderPtr cylinder(new rsg::Cylinder());
+		cylinder =  boost::dynamic_pointer_cast<rsg::Cylinder>(shape);
 
 		if (box !=0) {
 			LOG(DEBUG) << "                 -> Found a new box.";
@@ -158,25 +157,25 @@ public:
 		}
 	}
 
-	inline static void convertRosMsgToShape(arm_navigation_msgs::Shape shape, BRICS_3D::RSG::Shape::ShapePtr& convertedShape) {
+	inline static void convertRosMsgToShape(arm_navigation_msgs::Shape shape, brics_3d::rsg::Shape::ShapePtr& convertedShape) {
 		LOG(DEBUG) << "convertRosMsgToShape: ";
 		switch(shape.type) {
 		case arm_navigation_msgs::Shape::BOX: {
 			LOG(DEBUG) << "                 -> Found a new box.";
-			BRICS_3D::RSG::Box::BoxPtr newBox(new BRICS_3D::RSG::Box());
+			brics_3d::rsg::Box::BoxPtr newBox(new brics_3d::rsg::Box());
 			newBox->setSizeX(shape.dimensions[0]);
 			newBox->setSizeY(shape.dimensions[1]);
 			newBox->setSizeZ(shape.dimensions[2]);
-			convertedShape = boost::dynamic_pointer_cast<RSG::Shape>(newBox); // = newBox;
+			convertedShape = boost::dynamic_pointer_cast<rsg::Shape>(newBox); // = newBox;
 
-//			RSG::Box::BoxPtr box(new RSG::Box());
-//			box =  boost::dynamic_pointer_cast<RSG::Box>(convertedShape);
+//			rsg::Box::BoxPtr box(new rsg::Box());
+//			box =  boost::dynamic_pointer_cast<rsg::Box>(convertedShape);
 //			assert(box!=0);
 
 		} break;
 		case arm_navigation_msgs::Shape::CYLINDER: {
 			LOG(DEBUG) << "                 -> Found a new cylinder.";
-			BRICS_3D::RSG::Cylinder::CylinderPtr newCylinder(new BRICS_3D::RSG::Cylinder());
+			brics_3d::rsg::Cylinder::CylinderPtr newCylinder(new brics_3d::rsg::Cylinder());
 			newCylinder->setRadius(shape.dimensions[0]);
 			newCylinder->setHeight(shape.dimensions[1]);
 			convertedShape = newCylinder;
@@ -192,7 +191,7 @@ public:
 	}
 
 	/* Some helper functions */
-	inline static void convertTfTransformToHomogeniousMatrix (const tf::Transform& tfTransform, BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transformMatrix)
+	inline static void convertTfTransformToHomogeniousMatrix (const tf::Transform& tfTransform, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transformMatrix)
 	{
 		double mv[12];
 
@@ -209,7 +208,7 @@ public:
 
 	}
 
-	inline static void convertHomogeniousMatrixToTfTransform (const BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transformMatrix, tf::Transform& tfTransform) {
+	inline static void convertHomogeniousMatrixToTfTransform (const brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transformMatrix, tf::Transform& tfTransform) {
 		const double* matrixPtr = transformMatrix->getRawData();
 
 		btVector3 translation;

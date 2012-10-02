@@ -21,12 +21,12 @@
 #ifndef SCENEGRAPHROSCOMMUNICATOR_H_
 #define SCENEGRAPHROSCOMMUNICATOR_H_
 
-#include "worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
-#include "worldModel/sceneGraph/PointCloud.h"
-#include "worldModel/sceneGraph/Mesh.h"
-#include "worldModel/sceneGraph/Box.h"
-#include "worldModel/sceneGraph/Cylinder.h"
-#include "worldModel/sceneGraph/Attribute.h"
+#include "brics_3d/worldModel/sceneGraph/ISceneGraphUpdateObserver.h"
+#include "brics_3d/worldModel/sceneGraph/PointCloud.h"
+#include "brics_3d/worldModel/sceneGraph/Mesh.h"
+#include "brics_3d/worldModel/sceneGraph/Box.h"
+#include "brics_3d/worldModel/sceneGraph/Cylinder.h"
+#include "brics_3d/worldModel/sceneGraph/Attribute.h"
 
 /* ROS includes */
 #include "ros/ros.h"
@@ -40,9 +40,9 @@
 #include "brics_3d_msgs/DeleteNode.h"
 #include "brics_3d_msgs/AddParent.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 class SceneGraphROSCommunicator : public ISceneGraphUpdateObserver {
 public:

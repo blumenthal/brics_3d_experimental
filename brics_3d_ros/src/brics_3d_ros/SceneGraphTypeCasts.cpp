@@ -19,17 +19,17 @@
 
 #include "SceneGraphTypeCasts.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 SceneGraphTypeCasts::SceneGraphTypeCasts() {
-	// TODO Auto-generated constructor stub
+
 
 }
 
 SceneGraphTypeCasts::~SceneGraphTypeCasts() {
-	// TODO Auto-generated destructor stub
+
 }
 
 }

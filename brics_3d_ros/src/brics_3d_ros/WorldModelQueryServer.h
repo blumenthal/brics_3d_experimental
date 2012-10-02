@@ -24,7 +24,7 @@
 #include "ros/ros.h"
 
 /* BRICS_3D includes */
-#include <worldModel/WorldModel.h>
+#include <brics_3d/worldModel/WorldModel.h>
 
 /* BRICS_3D <-> ROS types */
 #include "brics_3d_msgs/GetRootId.h"
@@ -45,10 +45,10 @@
 #include "brics_3d_msgs/DeleteNode.h"
 #include "brics_3d_msgs/AddParent.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 /**
- * @brief ROS Wrapper (services) for a BRICS_3D::WorldModel handle.
+ * @brief ROS Wrapper (services) for a brics_3d::WorldModel handle.
  */
 class WorldModelQueryServer {
 public:
@@ -58,7 +58,7 @@ public:
 	 * @param n ROS handle
 	 * @param wm Handle the the worldmodel. All ROS service calls will be forwarded to this one.
 	 */
-	WorldModelQueryServer(ros::NodeHandle n, BRICS_3D::WorldModel* wm);
+	WorldModelQueryServer(ros::NodeHandle n, brics_3d::WorldModel* wm);
 
 	/**
 	 * @brief Default constructor.
@@ -110,7 +110,7 @@ private:
 	ros::Time currentTime;
 
 	/// Handle to scene graph based world model.
-	BRICS_3D::WorldModel* wm;
+	brics_3d::WorldModel* wm;
 
 	/// Common namespace for all services.
 	std::string serviceNameSpace;

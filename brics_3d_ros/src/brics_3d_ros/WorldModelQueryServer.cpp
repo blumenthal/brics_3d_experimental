@@ -20,13 +20,14 @@
 #include "WorldModelQueryServer.h"
 #include "SceneGraphTypeCasts.h"
 
-#include "core/Logger.h"
+#include "brics_3d/core/Logger.h"
 
-using BRICS_3D::Logger;
+using brics_3d::Logger;
+using namespace brics_3d::rsg;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-WorldModelQueryServer::WorldModelQueryServer(ros::NodeHandle n, BRICS_3D::WorldModel* wm) :
+WorldModelQueryServer::WorldModelQueryServer(ros::NodeHandle n, brics_3d::WorldModel* wm) :
 		node(n) {
 	this->wm = wm;
 	serviceNameSpace = "/worldModel/"; // default
@@ -120,7 +121,7 @@ bool WorldModelQueryServer::getRootIdCallback(brics_3d_msgs::GetRootId::Request&
 }
 
 bool WorldModelQueryServer::getNodesCallback(brics_3d_msgs::GetNodes::Request& request, brics_3d_msgs::GetNodes::Response& response) {
-	vector<BRICS_3D::RSG::Attribute> attributes;
+	vector<brics_3d::rsg::Attribute> attributes;
 	vector<unsigned int> ids;
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	response.succeeded = wm->scene.getNodes(attributes, ids);
@@ -129,7 +130,7 @@ bool WorldModelQueryServer::getNodesCallback(brics_3d_msgs::GetNodes::Request& r
 }
 
 bool WorldModelQueryServer::getNodeAttributesCallback(brics_3d_msgs::GetNodeAttributes::Request& request, brics_3d_msgs::GetNodeAttributes::Response& response){
-	vector<BRICS_3D::RSG::Attribute> attributes;
+	vector<brics_3d::rsg::Attribute> attributes;
 	response.succeeded = wm->scene.getNodeAttributes(request.id, attributes);
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, response.attributes);
 	return response.succeeded;
@@ -153,7 +154,7 @@ bool WorldModelQueryServer::getGroupChildrenCallback(brics_3d_msgs::GetGroupChil
 }
 
 bool WorldModelQueryServer::getTransformCallback(brics_3d_msgs::GetTransform::Request& request, brics_3d_msgs::GetTransform::Response& response) {
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new BRICS_3D::HomogeneousMatrix44());
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new brics_3d::HomogeneousMatrix44());
 	TimeStamp timeStamp;
 
 	SceneGraphTypeCasts::convertRosMsgToTimeStamp(request.stamp, timeStamp);
@@ -192,7 +193,7 @@ bool WorldModelQueryServer::getTransformForNodeCallback(brics_3d_msgs::GetTransf
  */
 
 bool WorldModelQueryServer::addNodeCallback(brics_3d_msgs::AddNode::Request& request, brics_3d_msgs::AddNode::Response& response) {
-	vector<BRICS_3D::RSG::Attribute> attributes;
+	vector<brics_3d::rsg::Attribute> attributes;
 	unsigned int assignedId;
 	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
@@ -205,7 +206,7 @@ bool WorldModelQueryServer::addNodeCallback(brics_3d_msgs::AddNode::Request& req
 
 bool WorldModelQueryServer::addGroupCallback(brics_3d_msgs::AddGroup::Request& request, brics_3d_msgs::AddGroup::Response& response) {
 	unsigned int assignedId;
-	vector<BRICS_3D::RSG::Attribute> attributes;
+	vector<brics_3d::rsg::Attribute> attributes;
 	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
 
@@ -218,8 +219,8 @@ bool WorldModelQueryServer::addGroupCallback(brics_3d_msgs::AddGroup::Request& r
 
 bool WorldModelQueryServer::addTransformNodeCallback(brics_3d_msgs::AddTransformNode::Request& request, brics_3d_msgs::AddTransformNode::Response& response) {
 	unsigned int assignedId;
-	vector<BRICS_3D::RSG::Attribute> attributes;
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new BRICS_3D::HomogeneousMatrix44());
+	vector<brics_3d::rsg::Attribute> attributes;
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new brics_3d::HomogeneousMatrix44());
 	TimeStamp timeStamp;
 	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
@@ -235,7 +236,7 @@ bool WorldModelQueryServer::addTransformNodeCallback(brics_3d_msgs::AddTransform
 
 bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometricNode::Request& request, brics_3d_msgs::AddGeometricNode::Response& response) {
 	unsigned int assignedId;
-	vector<BRICS_3D::RSG::Attribute> attributes;
+	vector<brics_3d::rsg::Attribute> attributes;
 	Shape::ShapePtr shape;
 	TimeStamp timeStamp;
 	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
@@ -243,8 +244,8 @@ bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometric
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	SceneGraphTypeCasts::convertRosMsgToShape(request.shape, shape);
-//	RSG::Box::BoxPtr box(new RSG::Box());
-//	box =  boost::dynamic_pointer_cast<RSG::Box>(shape);
+//	rsg::Box::BoxPtr box(new rsg::Box());
+//	box =  boost::dynamic_pointer_cast<rsg::Box>(shape);
 //	assert(box!=0);
 	SceneGraphTypeCasts::convertRosMsgToTimeStamp(request.stamp, timeStamp);
 	response.succeeded = wm->scene.addGeometricNode(request.parentId, assignedId, attributes, shape, timeStamp, request.forcedId);
@@ -254,7 +255,7 @@ bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometric
 }
 
 bool WorldModelQueryServer::setNodeAttributesCallback(brics_3d_msgs::SetNodeAttributes::Request& request, brics_3d_msgs::SetNodeAttributes::Response& response) {
-	vector<BRICS_3D::RSG::Attribute> newAttributes;
+	vector<brics_3d::rsg::Attribute> newAttributes;
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.newAttributes, newAttributes);
 	response.succeeded = wm->scene.setNodeAttributes(request.id, newAttributes);
@@ -263,7 +264,7 @@ bool WorldModelQueryServer::setNodeAttributesCallback(brics_3d_msgs::SetNodeAttr
 }
 
 bool WorldModelQueryServer::setTransformCallback(brics_3d_msgs::SetTransform::Request& request, brics_3d_msgs::SetTransform::Response& response) {
-	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new BRICS_3D::HomogeneousMatrix44());
+	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new brics_3d::HomogeneousMatrix44());
 	TimeStamp timeStamp;
 
 	SceneGraphTypeCasts::convertRosMsgToTransform(request.transform, transform);

@@ -18,16 +18,17 @@
 ******************************************************************************/
 
 #include "SceneGraphROSCommunicator.h"
-#include "core/Logger.h"
-#include "worldModel/sceneGraph/SubGraphChecker.h"
+#include "brics_3d/core/Logger.h"
+#include "brics_3d/worldModel/sceneGraph/SubGraphChecker.h"
 
 #include "SceneGraphTypeCasts.h"
 
-using BRICS_3D::Logger;
+using brics_3d::Logger;
+using namespace brics_3d::rsg;
 
-namespace BRICS_3D {
+namespace brics_3d {
 
-namespace RSG {
+namespace rsg {
 
 SceneGraphROSCommunicator::SceneGraphROSCommunicator(ros::NodeHandle n, std::string nameSpace) {
 	this->node = n;
@@ -205,11 +206,11 @@ bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned
 
 	if (noSharing) { //FIXME IDs get out of sync...
 		LOG(DEBUG) << "SceneGraphROSCommunicator: GeometricNode has non_shared tag. Skipping it.";
-		BRICS_3D::RSG::Box::BoxPtr dummyBox(new BRICS_3D::RSG::Box());
+		brics_3d::rsg::Box::BoxPtr dummyBox(new brics_3d::rsg::Box());
 		dummyBox->setSizeX(0.01);
 		dummyBox->setSizeY(0.01);
 		dummyBox->setSizeZ(0.01);
-		shape = boost::dynamic_pointer_cast<RSG::Shape>(dummyBox);
+		shape = boost::dynamic_pointer_cast<rsg::Shape>(dummyBox);
 		return true;
 	}
 
