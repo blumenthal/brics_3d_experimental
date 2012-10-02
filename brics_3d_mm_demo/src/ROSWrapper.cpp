@@ -21,7 +21,7 @@
 
 using namespace std;
 
-namespace BRICS_MM {
+namespace brics_mm {
 
 ROSWrapper::ROSWrapper(ros::NodeHandle& nodeHandle) : nodeHandle(nodeHandle) {
 	nodeHandle.param<bool>("show_osg_visualizer", show_osg_visualizer, true/*false*/);
@@ -123,8 +123,8 @@ bool ROSWrapper::GetPath(brics_mm_ros::BRICSGetPath::Request& req, brics_mm_ros:
 
 	if (wm != 0) {
 		LOG(DEBUG) << "Retrieving data from scene graph.";
-		BRICS_MM::GeomContainer* sceneGeoms = new BRICS_MM::GeomContainer();
-		BRICS_MM::SceneGraphToGeomConverter* sceneToGeoms = new BRICS_MM::SceneGraphToGeomConverter(&wm->scene, wm->scene.getRootId(), sceneGeoms);
+		brics_mm::GeomContainer* sceneGeoms = new brics_mm::GeomContainer();
+		brics_mm::SceneGraphToGeomConverter* sceneToGeoms = new brics_mm::SceneGraphToGeomConverter(&wm->scene, wm->scene.getRootId(), sceneGeoms);
 		wm->scene.executeGraphTraverser(sceneToGeoms, wm->scene.getRootId());
 		LOG(DEBUG) << environment->getNumContainers() << " geom container(s) to be cleaned.";
 		environment->clear();

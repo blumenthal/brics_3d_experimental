@@ -21,7 +21,7 @@
 #include "ompl/OmplWrapper.h"
 
 //BRICS_3D
-#include <worldModel/WorldModel.h>
+#include <brics_3d/worldModel/WorldModel.h>
 #include "SceneGraphToGeomConverter.h"
 
 // ROS includes
@@ -52,7 +52,7 @@
 #define mkstr2(X) #X
 #define mkstr(X) mkstr2(X)
 
-namespace BRICS_MM {
+namespace brics_mm {
 
 //! Very basic example class that shows prototypically how to integrate into ROS
 //! The class keeps track of the current position of the robot by listening on
@@ -97,7 +97,7 @@ public:
 
 	ParameterSet loadPlannerConfig(std::string configName);
 	
-	void setWorldModel (BRICS_3D::WorldModel* wm) {
+	void setWorldModel (brics_3d::WorldModel* wm) {
 		this->wm = wm;
 	}
 
@@ -156,7 +156,7 @@ private:
 	ROSMotionExecution* motionExecution;
 	boost::thread* motionExecutionThread;	
 
-	BRICS_3D::WorldModel* wm;
+	brics_3d::WorldModel* wm;
 };
 
 } // namespace BRICS_MM

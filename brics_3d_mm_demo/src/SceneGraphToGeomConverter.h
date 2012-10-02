@@ -21,54 +21,54 @@
 #define SCENEGRAPHTOGEOMCONVERTER_H_
 
 /* BRICS_3D includes */
-#include <core/ITriangleMesh.h>
-#include <worldModel/sceneGraph/Node.h>
-#include <worldModel/sceneGraph/Group.h>
-#include <worldModel/sceneGraph/Transform.h>
-#include <worldModel/sceneGraph/GeometricNode.h>
-#include <worldModel/sceneGraph/INodeVisitor.h>
-#include <worldModel/sceneGraph/SceneGraphFacade.h>
+#include <brics_3d/core/ITriangleMesh.h>
+#include <brics_3d/worldModel/sceneGraph/Node.h>
+#include <brics_3d/worldModel/sceneGraph/Group.h>
+#include <brics_3d/worldModel/sceneGraph/Transform.h>
+#include <brics_3d/worldModel/sceneGraph/GeometricNode.h>
+#include <brics_3d/worldModel/sceneGraph/INodeVisitor.h>
+#include <brics_3d/worldModel/sceneGraph/SceneGraphFacade.h>
 
 /* BRICS_MM includes */
-#include "brics_mm/core/environment/geom/GeomContainer.h"
-#include "brics_mm/core/environment/geom/TriangleSet.h"
+#include <brics_mm/core/environment/geom/GeomContainer.h>
+#include <brics_mm/core/environment/geom/TriangleSet.h>
 
-namespace BRICS_MM {
+namespace brics_mm {
 
 /**
- * Traverses RSG and generates appropriate BRICS_MM::Geoms.
+ * Traverses RSG and generates appropriate brics_mm::Geoms.
  */
-class SceneGraphToGeomConverter : public BRICS_3D::RSG::INodeVisitor {
+class SceneGraphToGeomConverter : public brics_3d::rsg::INodeVisitor {
 public:
-	SceneGraphToGeomConverter(BRICS_3D::RSG::SceneGraphFacade* facadeHandle, unsigned int referenceNodeId, BRICS_MM::GeomContainer* geoms);
+	SceneGraphToGeomConverter(brics_3d::rsg::SceneGraphFacade* facadeHandle, unsigned int referenceNodeId, brics_mm::GeomContainer* geoms);
 	virtual ~SceneGraphToGeomConverter();
 
-	virtual void visit(BRICS_3D::RSG::Node* node);
-	virtual void visit(BRICS_3D::RSG::Group* node);
-	virtual void visit(BRICS_3D::RSG::Transform* node);
-	virtual void visit(BRICS_3D::RSG::GeometricNode* node);
+	virtual void visit(brics_3d::rsg::Node* node);
+	virtual void visit(brics_3d::rsg::Group* node);
+	virtual void visit(brics_3d::rsg::Transform* node);
+	virtual void visit(brics_3d::rsg::GeometricNode* node);
 
 	/**
 	 * @param[out] geoms Pointer to a GeomContainer that will be filled with data whil traversing the graph.
 	 */
-	virtual void reset(BRICS_MM::GeomContainer* geoms);
+	virtual void reset(brics_mm::GeomContainer* geoms);
 
 	/**
 	 * @brief Overridable "template method" (for example for an ID aware version) for for resolving the transfrom between the reference frame and the fame valid in the currently visited GeometricNode.
 	 * @param node The currently visited GeometricNode.
 	 */
-	virtual BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr doGetTransformFromReferenceToGeom(BRICS_3D::RSG::GeometricNode* node);
+	virtual brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr doGetTransformFromReferenceToGeom(brics_3d::rsg::GeometricNode* node);
 
-	static void convertTriangleMesh(BRICS_3D::ITriangleMesh* mesh, BRICS_MM::TriangleSet* geomMesh, double geometryScaleFactor = 1.0);
-	static void convertTransform(BRICS_3D::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, BRICS_MM::Transform* geomTransform, double geometryScaleFactor = 1.0);
+	static void convertTriangleMesh(brics_3d::ITriangleMesh* mesh, brics_mm::TriangleSet* geomMesh, double geometryScaleFactor = 1.0);
+	static void convertTransform(brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, brics_mm::Transform* geomTransform, double geometryScaleFactor = 1.0);
 
 
 protected:
 
-	BRICS_3D::RSG::SceneGraphFacade* facadeHandle;
+	brics_3d::rsg::SceneGraphFacade* facadeHandle;
 	unsigned int referenceNodeId;
 
-	BRICS_MM::GeomContainer* geoms;
+	brics_mm::GeomContainer* geoms;
 
 	double geometryScaleFactor;
 

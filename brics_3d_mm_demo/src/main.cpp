@@ -19,57 +19,52 @@
 #include "utils/Logger.h"
 
 #include <brics_3d_ros/WorldModelQueryServer.h>
-#include <worldModel/WorldModel.h>
-#include <worldModel/sceneGraph/DotVisualizer.h>
-#undef LOGGER_H_ //unfortunately header gaurads are not unique...
-#include <core/Logger.h>
+#include <brics_3d/worldModel/WorldModel.h>
+#include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
+#include <brics_3d/core/Logger.h>
 
 #ifdef ENABLE_OSG
-	#undef OSGVISUALIZER_H_ //unfortunately header gaurads are not unique...
-	#include <worldModel/sceneGraph/OSGVisualizer.h>
+	#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #endif
 
 using namespace std;
-using namespace BRICS_MM;
-
-//OSGVisualizer* osgVisualizer = 0;
 
 
 int main(int argc, char* argv[])
 {
 
-	BRICS_MM::Logger::setMinLoglevel(BRICS_MM::Logger::LOGDEBUG);
-	BRICS_3D::Logger::setMinLoglevel(BRICS_3D::Logger::LOGDEBUG);
+	brics_mm::Logger::setMinLoglevel(brics_mm::Logger::LOGDEBUG);
+	brics_3d::Logger::setMinLoglevel(brics_3d::Logger::LOGDEBUG);
 
 	ros::init(argc, argv, "brics_mm");
 
 	ros::NodeHandle n("~");
-	ROSWrapper roswrapper(n);
+	brics_mm::ROSWrapper roswrapper(n);
 
-	BRICS_3D::WorldModel* wm = new BRICS_3D::WorldModel();
+	brics_3d::WorldModel* wm = new brics_3d::WorldModel();
 	roswrapper.setWorldModel(wm);
 
 #ifdef ENABLE_OSG
 	// Visualization tool for world model
-	BRICS_3D::RSG::OSGVisualizer* wmObserver = new BRICS_3D::RSG::OSGVisualizer();
+	brics_3d::rsg::OSGVisualizer* wmObserver = new brics_3d::rsg::OSGVisualizer();
 	wm->scene.attachUpdateObserver(wmObserver); //enable visualization
 #endif
 
-	BRICS_3D::WorldModelQueryServer wmServer(n, wm);
+	brics_3d::WorldModelQueryServer wmServer(n, wm);
 	wmServer.setServiceNameSpace("/brics_mm/worldModel/");
 	wmServer.initialize();
 
-	BRICS_3D::RSG::DotVisualizer* dbgObserver = new BRICS_3D::RSG::DotVisualizer(&wm->scene);
+	brics_3d::rsg::DotVisualizer* dbgObserver = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	wm->scene.attachUpdateObserver(dbgObserver);
 
 
 	
 	//create planner components
-	PathPlannerComponent pathPlanner;
-	RobotComponent robot;
-	ConfigurationSpaceComponent cspace;
-	CartesianSpaceComponent cartesianSpace;
-	CollisionCheckerComponent collisionChecker;
+	brics_mm::PathPlannerComponent pathPlanner;
+	brics_mm::RobotComponent robot;
+	brics_mm::ConfigurationSpaceComponent cspace;
+	brics_mm::CartesianSpaceComponent cartesianSpace;
+	brics_mm::CollisionCheckerComponent collisionChecker;
 
 	roswrapper.init(&pathPlanner, &robot, &cspace, &cartesianSpace, &collisionChecker);
 	roswrapper.registerServices();
