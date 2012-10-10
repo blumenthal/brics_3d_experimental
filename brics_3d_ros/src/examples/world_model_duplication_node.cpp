@@ -32,9 +32,13 @@
 	#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #endif
 
+#include "brics_3d_msgs/ResentSceneGraph.h"
 
 int main(int argc, char **argv)
 {
+
+	std::stringstream serviceName;
+	std::string serviceNameSpace = "/worldModel/";
 
 	ros::init(argc, argv, "world_model_duplication_node");
 	ros::NodeHandle n;
@@ -58,9 +62,22 @@ int main(int argc, char **argv)
 	wmServer.setServiceNameSpace("/worldModel/brics_mm/");
 	wmServer.initialize();
 
-	ros::MultiThreadedSpinner spinner(2);
-	spinner.spin();
-//	ros::spin();
+	ros::AsyncSpinner spinner(2);
+	spinner.start();
+
+	/* intialize data */
+	serviceName.str("");
+	serviceName << serviceNameSpace << "resentSceneGraph";
+	ros::ServiceClient resentSceneGraphClient = n.serviceClient<brics_3d_msgs::ResentSceneGraph>(serviceName.str());
+	brics_3d_msgs::ResentSceneGraph resentSceneGraphRequest;
+	resentSceneGraphRequest.request.subGraphRootId = wm->scene.getRootId();
+	if (!resentSceneGraphClient.call(resentSceneGraphRequest)) {
+		ROS_ERROR("Could not request to resent secene graph.");
+	}
+
+	ROS_INFO("Ready.");
+
+	ros::spin();
 	delete wm;
 	return 0;
 }
