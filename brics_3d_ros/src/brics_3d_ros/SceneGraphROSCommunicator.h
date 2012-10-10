@@ -118,6 +118,7 @@ protected:
 	brics_3d_msgs::SetTransform setTransformUpdate;
 	brics_3d_msgs::DeleteNode deleteNodeUpdate;
 	brics_3d_msgs::AddParent addParentUpdate;
+
 };
 
 }

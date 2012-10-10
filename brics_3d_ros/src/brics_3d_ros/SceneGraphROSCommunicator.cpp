@@ -296,6 +296,11 @@ bool SceneGraphROSCommunicator::addParent(unsigned int id, unsigned int parentId
 	return true;
 }
 
+//bool SceneGraphROSCommunicator::resentSceneGraphCallback(brics_3d_msgs::ResentSceneGraph::Request& request, brics_3d_msgs::ResentSceneGraph::Response& response) {
+//	SceneGraphToUpdatesTraverser
+//}
+
+
 //void SceneGraphROSCommunicator::addIdToSubGraphBlacklist(unsigned int subGraphId) {
 //	subGraphBlackList.push_back(subGraphId);
 //}

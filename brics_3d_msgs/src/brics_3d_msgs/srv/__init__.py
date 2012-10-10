@@ -5,6 +5,7 @@ from ._GetTransform import *
 from ._GetNodeParents import *
 from ._AddNode import *
 from ._SetTransform import *
+from ._ResentSceneGraph import *
 from ._GetNodeAttributes import *
 from ._AddGeometricNode import *
 from ._SetNodeAttributes import *

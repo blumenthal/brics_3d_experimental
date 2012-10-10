@@ -32,7 +32,12 @@ ENDIF(USE_OSG)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
-rosbuild_add_executable(world_model_node src/brics_3d_ros/WorldModelQueryServer.cpp src/brics_3d_ros/SceneGraphROSCommunicator.cpp src/examples/world_model_node.cpp)
+rosbuild_add_executable(world_model_node
+    src/brics_3d_ros/WorldModelQueryServer.cpp 
+    src/brics_3d_ros/SceneGraphROSCommunicator.cpp
+    src/brics_3d_ros/SceneGraphResentServer.cpp 
+    src/examples/world_model_node.cpp
+)
 IF(USE_OSG)
     target_link_libraries(world_model_node brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
 ELSE(USE_OSG)

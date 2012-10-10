@@ -61,7 +61,7 @@ public:
 	WorldModelQueryServer(ros::NodeHandle n, brics_3d::WorldModel* wm);
 
 	/**
-	 * @brief Default constructor.
+	 * @brief Default destructor.
 	 */
 	virtual ~WorldModelQueryServer();
 

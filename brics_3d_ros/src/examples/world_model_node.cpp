@@ -22,6 +22,7 @@
 
 #include "../brics_3d_ros/WorldModelQueryServer.h"
 #include "../brics_3d_ros/SceneGraphROSCommunicator.h"
+#include "../brics_3d_ros/SceneGraphResentServer.h"
 
 #include "brics_3d/worldModel/sceneGraph/DotVisualizer.h"
 #include "brics_3d/worldModel/sceneGraph/DotGraphGenerator.h"
@@ -57,6 +58,11 @@ int main(int argc, char **argv)
 	brics_3d::WorldModelQueryServer wmServer(n, wm);
 	wmServer.setServiceNameSpace("/worldModel/");
 	wmServer.initialize();
+
+	brics_3d::rsg::SceneGraphResentServer resentServer(n, wm, &updater);
+	resentServer.setServiceNameSpace("/worldModel/");
+	resentServer.initialize();
+
 
 	LOG(INFO) << "Ready.";
 

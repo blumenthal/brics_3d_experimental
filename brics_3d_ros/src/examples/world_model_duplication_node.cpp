@@ -54,7 +54,8 @@ int main(int argc, char **argv)
 //	wm->scene.attachUpdateObserver(&updater);
 
 	brics_3d::WorldModelQueryServer wmServer(n, wm);
-	wmServer.setServiceNameSpace("/worldModel/sampleListner/");
+//	wmServer.setServiceNameSpace("/worldModel/sampleListner/");
+	wmServer.setServiceNameSpace("/worldModel/brics_mm/");
 	wmServer.initialize();
 
 	ros::MultiThreadedSpinner spinner(2);
