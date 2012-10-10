@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	brics_3d::rsg::DotVisualizer dbgObserver(&wm->scene);
 //	wm->scene.attachUpdateObserver(&dbgObserver);
 
-	brics_3d::rsg::SceneGraphROSCommunicator updater(n, "/worldModel/brics_mm/");
+	brics_3d::rsg::SceneGraphROSCommunicator updater(n, "/brics_mm/worldModel/");
 	wm->scene.attachUpdateObserver(&updater);
 
 	brics_3d::WorldModelQueryServer wmServer(n, wm);

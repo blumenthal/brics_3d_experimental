@@ -23,6 +23,8 @@
 #include <brics_3d/worldModel/sceneGraph/DotVisualizer.h>
 #include <brics_3d/core/Logger.h>
 
+#include <brics_3d_msgs/ResentSceneGraph.h>
+
 #ifdef ENABLE_OSG
 	#include <brics_3d/worldModel/sceneGraph/OSGVisualizer.h>
 #endif
@@ -57,7 +59,20 @@ int main(int argc, char* argv[])
 	brics_3d::rsg::DotVisualizer* dbgObserver = new brics_3d::rsg::DotVisualizer(&wm->scene);
 	wm->scene.attachUpdateObserver(dbgObserver);
 
+	ros::AsyncSpinner spinner(2);
+	spinner.start();
 
+	/* intialize data */
+	std::stringstream serviceName;
+	std::string serviceNameSpace = "/worldModel/";
+	serviceName.str("");
+	serviceName << serviceNameSpace << "resentSceneGraph";
+	ros::ServiceClient resentSceneGraphClient = n.serviceClient<brics_3d_msgs::ResentSceneGraph>(serviceName.str());
+	brics_3d_msgs::ResentSceneGraph resentSceneGraphRequest;
+	resentSceneGraphRequest.request.subGraphRootId = wm->scene.getRootId();
+	if (!resentSceneGraphClient.call(resentSceneGraphRequest)) {
+		ROS_ERROR("Could not request to resent scene graph.");
+	}
 	
 	//create planner components
 	brics_mm::PathPlannerComponent pathPlanner;
@@ -74,8 +89,8 @@ int main(int argc, char* argv[])
 
 	ROS_INFO("Ready to plan a path.");
 
-	ros::MultiThreadedSpinner spinner(2); // Use 2 threads
-	spinner.spin();
-
+//	ros::MultiThreadedSpinner spinner(2); // Use 2 threads
+//	spinner.spin();
+	ros::spin();
 
 }

@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
 	brics_3d::WorldModelQueryServer wmServer(n, wm);
 //	wmServer.setServiceNameSpace("/worldModel/sampleListner/");
-	wmServer.setServiceNameSpace("/worldModel/brics_mm/");
+	wmServer.setServiceNameSpace("/brics_mm/worldModel/");
 	wmServer.initialize();
 
 	ros::AsyncSpinner spinner(2);
