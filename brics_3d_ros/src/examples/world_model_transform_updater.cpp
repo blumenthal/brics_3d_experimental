@@ -183,7 +183,8 @@ int main(int argc, char **argv)
 			setTransformUpdate.request.transform.transform.translation.x = x;
 			setTransformUpdate.request.transform.transform.translation.y = y;
 			setTransformUpdate.request.transform.transform.translation.z = z;
-			setTransformUpdate.request.transform.transform.rotation = tf::createQuaternionMsgFromYaw(3.14 /*x*/ /*0*/);
+//			setTransformUpdate.request.transform.transform.rotation = tf::createQuaternionMsgFromYaw(x /*0*/);
+			setTransformUpdate.request.transform.transform.rotation = tf::createQuaternionMsgFromRollPitchYaw(0, x,0);
 
 			if (!setTransformClient.call(setTransformUpdate)) {
 				ROS_ERROR("Failed to call service Set Transform");

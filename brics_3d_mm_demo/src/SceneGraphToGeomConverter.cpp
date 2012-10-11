@@ -174,6 +174,13 @@ void SceneGraphToGeomConverter::convertTransform(brics_3d::IHomogeneousMatrix44:
 	assert(transform != 0);
 	assert(geomTransform != 0);
 
+	/*
+	 * column-row layout:
+	 * 0 4 8  12
+	 * 1 5 9  13
+	 * 2 6 10 14
+	 * 3 7 11 15
+	 */
 	const double *matrix = transform->getRawData(); // column-row order!
 	geomTransform->trans_[brics_mm::Transform::R00] = matrix[0];
 	geomTransform->trans_[brics_mm::Transform::R01] = matrix[4];
@@ -183,13 +190,17 @@ void SceneGraphToGeomConverter::convertTransform(brics_3d::IHomogeneousMatrix44:
 	geomTransform->trans_[brics_mm::Transform::R11] = matrix[5];
 	geomTransform->trans_[brics_mm::Transform::R12] = matrix[9];
 
-	geomTransform->trans_[brics_mm::Transform::R21] = matrix[2];
-	geomTransform->trans_[brics_mm::Transform::R22] = matrix[6];
+	geomTransform->trans_[brics_mm::Transform::R20] = matrix[2];
+	geomTransform->trans_[brics_mm::Transform::R21] = matrix[6];
 	geomTransform->trans_[brics_mm::Transform::R22] = matrix[10];
 
 	geomTransform->trans_[brics_mm::Transform::TX] = matrix[12] * geometryScaleFactor;
 	geomTransform->trans_[brics_mm::Transform::TY] = matrix[13] * geometryScaleFactor;
 	geomTransform->trans_[brics_mm::Transform::TZ] = matrix[14] * geometryScaleFactor;
+
+//	LOG(DEBUG) << "brics_3d transform: " << std::endl << *transform;
+//	LOG(DEBUG) << "brics_mm geom transform: " << std::endl << *geomTransform;
+//	LOG(DEBUG) << "with scale: " << geometryScaleFactor;
 
 }
 

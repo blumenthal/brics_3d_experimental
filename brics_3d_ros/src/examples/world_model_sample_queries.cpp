@@ -209,6 +209,41 @@ int main(int argc, char **argv)
 	}
 	ROS_INFO("Added new GeometricNode with ID %i", addGeometricNodeUpdate.response.assignedId);
 
+
+	/* Add a second transform to the other transform */
+	addTransformNodeUpdate.request.attributes.resize(1);
+	addTransformNodeUpdate.request.attributes[0].key = "tf";
+	addTransformNodeUpdate.request.attributes[0].value = "some_other_tf";
+	addTransformNodeUpdate.request.parentId = addTransformNodeUpdate.response.assignedId; //The old transform ID
+	addTransformNodeUpdate.request.stamp = ros::Time::now();
+	addTransformNodeUpdate.request.transform.transform.translation.x = 1;
+	addTransformNodeUpdate.request.transform.transform.translation.y = 0;
+	addTransformNodeUpdate.request.transform.transform.translation.z = 0;
+	addTransformNodeUpdate.request.transform.transform.rotation = tf::createQuaternionMsgFromRollPitchYaw(1.5,0,0);
+
+	if (!addTransformNodeCallbackClient.call(addTransformNodeUpdate)) {
+		ROS_ERROR("Failed to call service AddTransformNode");
+		return 1;
+	}
+	ROS_INFO("Added a second transform with ID %i", addTransformNodeUpdate.response.assignedId);
+
+	/* Add yet another cylunder but as parent to the secont transform */
+	addGeometricNodeUpdate.request.parentId = addTransformNodeUpdate.response.assignedId;
+	addGeometricNodeUpdate.request.attributes.resize(1);
+	addGeometricNodeUpdate.request.attributes[0].key = "name";
+	addGeometricNodeUpdate.request.attributes[0].value = "some_other_cylinder";
+	addGeometricNodeUpdate.request.shape.type = arm_navigation_msgs::Shape::CYLINDER;
+	addGeometricNodeUpdate.request.shape.dimensions.resize(2);
+	addGeometricNodeUpdate.request.shape.dimensions[0] = 0.2;
+	addGeometricNodeUpdate.request.shape.dimensions[1] = 0.7;
+	addGeometricNodeUpdate.request.stamp = ros::Time::now();
+
+	if (!addGeometricNodeClient.call(addGeometricNodeUpdate)) {
+		ROS_ERROR("Failed to call service AddGeometricNodeUpdate");
+		return 1;
+	}
+	ROS_INFO("Added new GeometricNode with ID %i", addGeometricNodeUpdate.response.assignedId);
+
 	/* check how many nodes with certain attributes are stored */
 	getNodesQuery.request.attributes.resize(1);
 	getNodesQuery.request.attributes[0].key = "color";
