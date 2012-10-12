@@ -26,7 +26,7 @@
 #include "brics_3d_msgs/GetNodes.h"
 #include "brics_3d_msgs/SetTransform.h"
 
-namespace BRICS_3D {
+namespace brics_3d {
 
 const static unsigned int INVALID_ID = 0;
 
@@ -74,7 +74,7 @@ public:
 	};
 
 	void processTfTopic () {
-		std::map <std::string, BRICS_3D::SceneGraphTransformNodes>::iterator iter = tfToSceneGraphMapping.begin();
+		std::map <std::string, brics_3d::SceneGraphTransformNodes>::iterator iter = tfToSceneGraphMapping.begin();
 		for (iter = tfToSceneGraphMapping.begin(); iter != tfToSceneGraphMapping.end(); iter++) {
 
 			std::string tfFrameId = iter->first;
@@ -153,7 +153,7 @@ private:
 	ros::Duration maxTFCacheDuration;
 
 	/// Mapping
-	std::map <std::string, BRICS_3D::SceneGraphTransformNodes> tfToSceneGraphMapping;
+	std::map <std::string, brics_3d::SceneGraphTransformNodes> tfToSceneGraphMapping;
 
 	ros::ServiceClient getNodesClient;
 	brics_3d_msgs::GetNodes getNodesQuery;
@@ -163,17 +163,17 @@ private:
 
 };
 
-}  // namespace BRICS_3D
+}  // namespace brics_3d
 
 
 int main(int argc, char **argv) {
 
 	ros::init(argc, argv, "tf_to_scene_graph_node");
 	ros::NodeHandle n;
-	BRICS_3D::TfToSceneGraphConverter tfToSceneGrapgh(n);
+	brics_3d::TfToSceneGraphConverter tfToSceneGrapgh(n);
 
 
-	ros::Rate rate(10); // (in Hz)
+	ros::Rate rate(1); // (in Hz)
 	while (n.ok()){
 		ros::spinOnce();
 		tfToSceneGrapgh.processTfTopic();

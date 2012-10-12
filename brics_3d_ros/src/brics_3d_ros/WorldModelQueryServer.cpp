@@ -241,6 +241,7 @@ bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometric
 	TimeStamp timeStamp;
 	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
+	LOG(DEBUG) << "WorldModelQueryServer: adding GeometricNode with parent ID: " << request.parentId;
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	SceneGraphTypeCasts::convertRosMsgToShape(request.shape, shape);

@@ -198,26 +198,28 @@ bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned
 
 
 bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
-	LOG(DEBUG) << "SceneGraphROSCommunicator: adding GeometricNode";
+	LOG(DEBUG) << "SceneGraphROSCommunicator: adding GeometricNode with parent ID: " << parentId;
 
 	bool noSharing = false;
 	Attribute noSharingTag("rsgInfo","non_shared");
 	noSharing = attributeListContainsAttribute(attributes, noSharingTag);
 
-	if (noSharing) { //FIXME IDs get out of sync...
+	if (noSharing) {
 		LOG(DEBUG) << "SceneGraphROSCommunicator: GeometricNode has non_shared tag. Skipping it.";
-		brics_3d::rsg::Box::BoxPtr dummyBox(new brics_3d::rsg::Box());
-		dummyBox->setSizeX(0.01);
-		dummyBox->setSizeY(0.01);
-		dummyBox->setSizeZ(0.01);
-		shape = boost::dynamic_pointer_cast<rsg::Shape>(dummyBox);
+//		brics_3d::rsg::Box::BoxPtr dummyBox(new brics_3d::rsg::Box());
+//		dummyBox->setSizeX(0.01);
+//		dummyBox->setSizeY(0.01);
+//		dummyBox->setSizeZ(0.01);
+//		shape = boost::dynamic_pointer_cast<rsg::Shape>(dummyBox);
 		return true;
 	}
 
 
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addGeometricNodeUpdate.request.attributes);
-	SceneGraphTypeCasts::convertShapeToRosMsg(shape, addGeometricNodeUpdate.request.shape);
+	if(!SceneGraphTypeCasts::convertShapeToRosMsg(shape, addGeometricNodeUpdate.request.shape)) {
+		return false;
+	}
 
 	addGeometricNodeUpdate.request.parentId = parentId;
 	addGeometricNodeUpdate.request.stamp = ros::Time::now(); //FIXME

@@ -128,7 +128,7 @@ public:
 		convertTfTransformToHomogeniousMatrix(tmpTransform, convertedTransform);
 	}
 
-	inline static void convertShapeToRosMsg(brics_3d::rsg::Shape::ShapePtr shape, arm_navigation_msgs::Shape& convertedShape){
+	inline static bool convertShapeToRosMsg(brics_3d::rsg::Shape::ShapePtr shape, arm_navigation_msgs::Shape& convertedShape){
 		LOG(DEBUG) << "convertShapeToRosMsg: ";
 		//		rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pointCloud(new rsg::PointCloud<brics_3d::PointCloud3D>());
 //		pointCloud = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(shape);
@@ -154,10 +154,12 @@ public:
 			convertedShape.dimensions[1] = cylinder->getHeight();
 		} else {
 			LOG(ERROR) << "convertShapeToRosMsg: Shape type not yet supported.";
+			return false;
 		}
+		return true;
 	}
 
-	inline static void convertRosMsgToShape(arm_navigation_msgs::Shape shape, brics_3d::rsg::Shape::ShapePtr& convertedShape) {
+	inline static bool convertRosMsgToShape(arm_navigation_msgs::Shape shape, brics_3d::rsg::Shape::ShapePtr& convertedShape) {
 		LOG(DEBUG) << "convertRosMsgToShape: ";
 		switch(shape.type) {
 		case arm_navigation_msgs::Shape::BOX: {
@@ -186,8 +188,9 @@ public:
 			break;
 		case arm_navigation_msgs::Shape::MESH:
 			LOG(ERROR) << "convertRosMsgToShape: Mesh type not yet supported.";
-			break;
+			return false;
 		}
+		return true;
 	}
 
 	/* Some helper functions */
