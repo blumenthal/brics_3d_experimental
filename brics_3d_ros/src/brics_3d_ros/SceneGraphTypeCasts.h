@@ -24,6 +24,7 @@
 #include <brics_3d/worldModel/sceneGraph/SceneGraphFacade.h>
 #include <brics_3d/worldModel/sceneGraph/Box.h>
 #include <brics_3d/worldModel/sceneGraph/Cylinder.h>
+#include <brics_3d/worldModel/WorldModel.h>
 #include <brics_3d/core/HomogeneousMatrix44.h>
 #include <brics_3d/core/Logger.h>
 
@@ -46,6 +47,9 @@
 #include "brics_3d_msgs/SetTransform.h"
 #include "brics_3d_msgs/DeleteNode.h"
 #include "brics_3d_msgs/AddParent.h"
+
+#include "brics_3d_msgs/SceneObject.h"
+#include "brics_3d_msgs/SceneObjects.h"
 
 #include <tf/tf.h>
 
@@ -231,7 +235,36 @@ public:
 		tfTransform.setBasis(rotation);
 	}
 
+	inline static bool convertSceneObjectToRosMsg(brics_3d::SceneObject sceneObject, brics_3d_msgs::SceneObject& convertedSceneObject, std::string originFrameId) {
+		convertedSceneObject.id = sceneObject.id;
+		convertedSceneObject.parentId = sceneObject.parentId;
+		convertAttributesToRosMsg(sceneObject.attributes, convertedSceneObject.attributes);
 
+		std::stringstream objectSceneFrameID;
+		convertTransformToRosMsg(sceneObject.transform, convertedSceneObject.transform);
+		convertedSceneObject.transform.header.stamp = ros::Time::now();
+		convertedSceneObject.transform.header.frame_id = originFrameId;
+		objectSceneFrameID.str("");
+		objectSceneFrameID << "scene_object_" << sceneObject.id;
+		convertedSceneObject.transform.child_frame_id = objectSceneFrameID.str();
+
+		if(!convertShapeToRosMsg(sceneObject.shape, convertedSceneObject.shape)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	inline static bool convertSceneObjectsToRosMsg(vector<brics_3d::SceneObject> sceneObjects, brics_3d_msgs::SceneObjects& convertedSceneObjects, std::string originFrameId) {
+		convertedSceneObjects.sceneObjects.resize(sceneObjects.size());
+		for (unsigned int i = 0; i < sceneObjects.size(); ++i) {
+			if(!convertSceneObjectToRosMsg(sceneObjects[i], convertedSceneObjects.sceneObjects[i], originFrameId)) {
+				LOG(ERROR) << "convertSceneObjectsToRosMsg: An error occured while converting scene object " << i;
+				return false;
+			}
+		}
+		return true;
+	}
 };
 
 }

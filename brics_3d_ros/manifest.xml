@@ -9,12 +9,12 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/brics_3d_ros</url>
   <depend package="eigen" /> 
-  <!--<depend package="brics_3d"/>-->
-  <depend package="BRICS_3D"/>
+  <depend package="brics_3d"/>
+  <!--<depend package="BRICS_3D"/>-->
   <depend package="brics_3d_msgs"/>
 
   <export>
-    <cpp cflags="-I${prefix}/src/" />
+    <cpp cflags="-I${prefix}/src/ -L${prefix}/lib/ -lbrics_3d_ros" />
   </export>
 
 

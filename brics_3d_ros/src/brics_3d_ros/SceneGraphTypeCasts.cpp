@@ -23,15 +23,6 @@ namespace brics_3d {
 
 namespace rsg {
 
-SceneGraphTypeCasts::SceneGraphTypeCasts() {
-
-
-}
-
-SceneGraphTypeCasts::~SceneGraphTypeCasts() {
-
-}
-
 }
 
 }

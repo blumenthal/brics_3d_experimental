@@ -32,6 +32,14 @@ ENDIF(USE_OSG)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
+
+rosbuild_add_library(${PROJECT_NAME}
+    src/brics_3d_ros/SceneGraphTypeCasts.cpp
+    src/brics_3d_ros/WorldModelQueryServer.cpp 
+    src/brics_3d_ros/SceneGraphROSCommunicator.cpp
+    src/brics_3d_ros/SceneGraphResentServer.cpp 
+)
+
 rosbuild_add_executable(world_model_node
     src/brics_3d_ros/WorldModelQueryServer.cpp 
     src/brics_3d_ros/SceneGraphROSCommunicator.cpp

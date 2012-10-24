@@ -4,5 +4,6 @@
 /msg_gen
 /srv_gen
 /docs
+lib
 .cproject
 .project
