@@ -163,11 +163,15 @@ import brics_3d_msgs.msg
 import std_msgs.msg
 
 class GetSceneObjectsResponse(roslib.message.Message):
-  _md5sum = "9575eab9a485984c889841a7b7bf0b22"
+  _md5sum = "124238694ec014a58acb1728d817e2d4"
   _type = "brics_3d_msgs/GetSceneObjectsResponse"
   _has_header = False #flag to mark the presence of a Header object
-  _full_text = """SceneObject[] results
+  _full_text = """SceneObjects results
 
+
+================================================================================
+MSG: brics_3d_msgs/SceneObjects
+SceneObject[] sceneObjects
 ================================================================================
 MSG: brics_3d_msgs/SceneObject
 # Description of an object in the world model
@@ -280,7 +284,7 @@ string key
 string value
 """
   __slots__ = ['results']
-  _slot_types = ['brics_3d_msgs/SceneObject[]']
+  _slot_types = ['brics_3d_msgs/SceneObjects']
 
   def __init__(self, *args, **kwds):
     """
@@ -300,9 +304,9 @@ string value
       super(GetSceneObjectsResponse, self).__init__(*args, **kwds)
       #message fields cannot be None, assign default values for those that are
       if self.results is None:
-        self.results = []
+        self.results = brics_3d_msgs.msg.SceneObjects()
     else:
-      self.results = []
+      self.results = brics_3d_msgs.msg.SceneObjects()
 
   def _get_types(self):
     """
@@ -317,9 +321,9 @@ string value
     @type  buff: StringIO
     """
     try:
-      length = len(self.results)
+      length = len(self.results.sceneObjects)
       buff.write(_struct_I.pack(length))
-      for val1 in self.results:
+      for val1 in self.results.sceneObjects:
         _x = val1
         buff.write(_struct_2I.pack(_x.id, _x.parentId))
         _v1 = val1.transform
@@ -375,11 +379,13 @@ string value
     @type  str: str
     """
     try:
+      if self.results is None:
+        self.results = brics_3d_msgs.msg.SceneObjects()
       end = 0
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.results = []
+      self.results.sceneObjects = []
       for i in range(0, length):
         val1 = brics_3d_msgs.msg.SceneObject()
         _x = val1
@@ -467,7 +473,7 @@ string value
           end += length
           val2.value = str[start:end]
           val1.attributes.append(val2)
-        self.results.append(val1)
+        self.results.sceneObjects.append(val1)
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
@@ -482,9 +488,9 @@ string value
     @type  numpy module
     """
     try:
-      length = len(self.results)
+      length = len(self.results.sceneObjects)
       buff.write(_struct_I.pack(length))
-      for val1 in self.results:
+      for val1 in self.results.sceneObjects:
         _x = val1
         buff.write(_struct_2I.pack(_x.id, _x.parentId))
         _v15 = val1.transform
@@ -542,11 +548,13 @@ string value
     @type  numpy: module
     """
     try:
+      if self.results is None:
+        self.results = brics_3d_msgs.msg.SceneObjects()
       end = 0
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
-      self.results = []
+      self.results.sceneObjects = []
       for i in range(0, length):
         val1 = brics_3d_msgs.msg.SceneObject()
         _x = val1
@@ -634,7 +642,7 @@ string value
           end += length
           val2.value = str[start:end]
           val1.attributes.append(val2)
-        self.results.append(val1)
+        self.results.sceneObjects.append(val1)
       return self
     except struct.error as e:
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
@@ -646,6 +654,6 @@ _struct_2I = struct.Struct("<2I")
 _struct_3d = struct.Struct("<3d")
 class GetSceneObjects(roslib.message.ServiceDefinition):
   _type          = 'brics_3d_msgs/GetSceneObjects'
-  _md5sum = '6ac508fedc4babc9697964663d676fe7'
+  _md5sum = '306a56574fee301119ea632638ca9228'
   _request_class  = GetSceneObjectsRequest
   _response_class = GetSceneObjectsResponse

@@ -174,10 +174,6 @@ public:
 			newBox->setSizeZ(shape.dimensions[2]);
 			convertedShape = boost::dynamic_pointer_cast<rsg::Shape>(newBox); // = newBox;
 
-//			rsg::Box::BoxPtr box(new rsg::Box());
-//			box =  boost::dynamic_pointer_cast<rsg::Box>(convertedShape);
-//			assert(box!=0);
-
 		} break;
 		case arm_navigation_msgs::Shape::CYLINDER: {
 			LOG(DEBUG) << "                 -> Found a new cylinder.";
@@ -263,6 +259,26 @@ public:
 				return false;
 			}
 		}
+		return true;
+	}
+
+	inline static bool convertPoseMsgToHomogeniousMatrix(geometry_msgs::PoseStamped pose, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& transformMatrix) {
+		tf::Transform tfTransform;
+		btVector3 translation;
+		btQuaternion rotation;
+
+		translation.setX(pose.pose.position.x);
+		translation.setY(pose.pose.position.y);
+		translation.setZ(pose.pose.position.z);
+		rotation.setX(pose.pose.orientation.x);
+		rotation.setY(pose.pose.orientation.y);
+		rotation.setZ(pose.pose.orientation.z);
+		rotation.setW(pose.pose.orientation.w);
+
+		tfTransform.setOrigin(translation);
+		tfTransform.setRotation(rotation);
+		convertTfTransformToHomogeniousMatrix(tfTransform, transformMatrix);
+
 		return true;
 	}
 };
