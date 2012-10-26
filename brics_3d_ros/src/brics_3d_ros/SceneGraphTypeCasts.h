@@ -255,8 +255,8 @@ public:
 		convertedSceneObjects.sceneObjects.resize(sceneObjects.size());
 		for (unsigned int i = 0; i < sceneObjects.size(); ++i) {
 			if(!convertSceneObjectToRosMsg(sceneObjects[i], convertedSceneObjects.sceneObjects[i], originFrameId)) {
-				LOG(ERROR) << "convertSceneObjectsToRosMsg: An error occured while converting scene object " << i;
-				return false;
+				//LOG(WARNING) << "convertSceneObjectsToRosMsg: An error occured while converting scene object " << i;
+				//return false;
 			}
 		}
 		return true;
