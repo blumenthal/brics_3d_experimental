@@ -14,7 +14,7 @@
   <depend package="brics_3d_msgs"/>
 
   <export>
-    <cpp cflags="-I${prefix}/src/ -L${prefix}/lib/ -lbrics_3d_ros" />
+    <cpp cflags="-I${prefix}/src/" lflags="-L${prefix}/lib/ -lbrics_3d_ros" />
   </export>
 
 
