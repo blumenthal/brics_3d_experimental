@@ -2,20 +2,20 @@
 import roslib.message
 import struct
 
-import arm_navigation_msgs.msg
+import sensor_msgs.msg
 import geometry_msgs.msg
 import brics_3d_msgs.msg
 import std_msgs.msg
 
 class SceneObject(roslib.message.Message):
-  _md5sum = "14b65502886a9b426bca98053336566d"
+  _md5sum = "dbb9396525105e26028f50021465b290"
   _type = "brics_3d_msgs/SceneObject"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """# Description of an object in the world model
 uint32 id
 uint32 parentId
 geometry_msgs/TransformStamped transform
-arm_navigation_msgs/Shape shape 
+brics_3d_msgs/Shape shape 
 Attribute[] attributes
 
 ================================================================================
@@ -73,11 +73,12 @@ float64 z
 float64 w
 
 ================================================================================
-MSG: arm_navigation_msgs/Shape
+MSG: brics_3d_msgs/Shape
 byte SPHERE=0
 byte BOX=1
 byte CYLINDER=2
 byte MESH=3
+byte POINTCLOUD=4
 
 byte type
 
@@ -107,6 +108,10 @@ float64[] dimensions
 int32[] triangles
 geometry_msgs/Point[] vertices
 
+
+#### define point cloud ####
+
+sensor_msgs/PointCloud2 pointCloud
 ================================================================================
 MSG: geometry_msgs/Point
 # This contains the position of a point in free space
@@ -115,13 +120,61 @@ float64 y
 float64 z
 
 ================================================================================
+MSG: sensor_msgs/PointCloud2
+# This message holds a collection of N-dimensional points, which may
+# contain additional information such as normals, intensity, etc. The
+# point data is stored as a binary blob, its layout described by the
+# contents of the "fields" array.
+
+# The point cloud data may be organized 2d (image-like) or 1d
+# (unordered). Point clouds organized as 2d images may be produced by
+# camera depth sensors such as stereo or time-of-flight.
+
+# Time of sensor data acquisition, and the coordinate frame ID (for 3d
+# points).
+Header header
+
+# 2D structure of the point cloud. If the cloud is unordered, height is
+# 1 and width is the length of the point cloud.
+uint32 height
+uint32 width
+
+# Describes the channels and their layout in the binary data blob.
+PointField[] fields
+
+bool    is_bigendian # Is this data bigendian?
+uint32  point_step   # Length of a point in bytes
+uint32  row_step     # Length of a row in bytes
+uint8[] data         # Actual point data, size is (row_step*height)
+
+bool is_dense        # True if there are no invalid points
+
+================================================================================
+MSG: sensor_msgs/PointField
+# This message holds the description of one point entry in the
+# PointCloud2 message format.
+uint8 INT8    = 1
+uint8 UINT8   = 2
+uint8 INT16   = 3
+uint8 UINT16  = 4
+uint8 INT32   = 5
+uint8 UINT32  = 6
+uint8 FLOAT32 = 7
+uint8 FLOAT64 = 8
+
+string name      # Name of field
+uint32 offset    # Offset from start of point struct
+uint8  datatype  # Datatype enumeration, see above
+uint32 count     # How many elements in the field
+
+================================================================================
 MSG: brics_3d_msgs/Attribute
 # Attribute description for objects in the world model
 string key
 string value
 """
   __slots__ = ['id','parentId','transform','shape','attributes']
-  _slot_types = ['uint32','uint32','geometry_msgs/TransformStamped','arm_navigation_msgs/Shape','brics_3d_msgs/Attribute[]']
+  _slot_types = ['uint32','uint32','geometry_msgs/TransformStamped','brics_3d_msgs/Shape','brics_3d_msgs/Attribute[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -147,14 +200,14 @@ string value
       if self.transform is None:
         self.transform = geometry_msgs.msg.TransformStamped()
       if self.shape is None:
-        self.shape = arm_navigation_msgs.msg.Shape()
+        self.shape = brics_3d_msgs.msg.Shape()
       if self.attributes is None:
         self.attributes = []
     else:
       self.id = 0
       self.parentId = 0
       self.transform = geometry_msgs.msg.TransformStamped()
-      self.shape = arm_navigation_msgs.msg.Shape()
+      self.shape = brics_3d_msgs.msg.Shape()
       self.attributes = []
 
   def _get_types(self):
@@ -193,6 +246,31 @@ string value
       for val1 in self.shape.vertices:
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+      _x = self
+      buff.write(_struct_3I.pack(_x.shape.pointCloud.header.seq, _x.shape.pointCloud.header.stamp.secs, _x.shape.pointCloud.header.stamp.nsecs))
+      _x = self.shape.pointCloud.header.frame_id
+      length = len(_x)
+      buff.write(struct.pack('<I%ss'%length, length, _x))
+      _x = self
+      buff.write(_struct_2I.pack(_x.shape.pointCloud.height, _x.shape.pointCloud.width))
+      length = len(self.shape.pointCloud.fields)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.shape.pointCloud.fields:
+        _x = val1.name
+        length = len(_x)
+        buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_IBI.pack(_x.offset, _x.datatype, _x.count))
+      _x = self
+      buff.write(_struct_B2I.pack(_x.shape.pointCloud.is_bigendian, _x.shape.pointCloud.point_step, _x.shape.pointCloud.row_step))
+      _x = self.shape.pointCloud.data
+      length = len(_x)
+      # - if encoded as a list instead, serialize as bytes instead of string
+      if type(_x) in [list, tuple]:
+        buff.write(struct.pack('<I%sB'%length, length, *_x))
+      else:
+        buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_B.pack(self.shape.pointCloud.is_dense))
       length = len(self.attributes)
       buff.write(_struct_I.pack(length))
       for val1 in self.attributes:
@@ -215,7 +293,7 @@ string value
       if self.transform is None:
         self.transform = geometry_msgs.msg.TransformStamped()
       if self.shape is None:
-        self.shape = arm_navigation_msgs.msg.Shape()
+        self.shape = brics_3d_msgs.msg.Shape()
       end = 0
       _x = self
       start = end
@@ -262,6 +340,52 @@ string value
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
         self.shape.vertices.append(val1)
+      _x = self
+      start = end
+      end += 12
+      (_x.shape.pointCloud.header.seq, _x.shape.pointCloud.header.stamp.secs, _x.shape.pointCloud.header.stamp.nsecs,) = _struct_3I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      self.shape.pointCloud.header.frame_id = str[start:end]
+      _x = self
+      start = end
+      end += 8
+      (_x.shape.pointCloud.height, _x.shape.pointCloud.width,) = _struct_2I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.shape.pointCloud.fields = []
+      for i in range(0, length):
+        val1 = sensor_msgs.msg.PointField()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        val1.name = str[start:end]
+        _x = val1
+        start = end
+        end += 9
+        (_x.offset, _x.datatype, _x.count,) = _struct_IBI.unpack(str[start:end])
+        self.shape.pointCloud.fields.append(val1)
+      _x = self
+      start = end
+      end += 9
+      (_x.shape.pointCloud.is_bigendian, _x.shape.pointCloud.point_step, _x.shape.pointCloud.row_step,) = _struct_B2I.unpack(str[start:end])
+      self.shape.pointCloud.is_bigendian = bool(self.shape.pointCloud.is_bigendian)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      self.shape.pointCloud.data = str[start:end]
+      start = end
+      end += 1
+      (self.shape.pointCloud.is_dense,) = _struct_B.unpack(str[start:end])
+      self.shape.pointCloud.is_dense = bool(self.shape.pointCloud.is_dense)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -318,6 +442,31 @@ string value
       for val1 in self.shape.vertices:
         _x = val1
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+      _x = self
+      buff.write(_struct_3I.pack(_x.shape.pointCloud.header.seq, _x.shape.pointCloud.header.stamp.secs, _x.shape.pointCloud.header.stamp.nsecs))
+      _x = self.shape.pointCloud.header.frame_id
+      length = len(_x)
+      buff.write(struct.pack('<I%ss'%length, length, _x))
+      _x = self
+      buff.write(_struct_2I.pack(_x.shape.pointCloud.height, _x.shape.pointCloud.width))
+      length = len(self.shape.pointCloud.fields)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.shape.pointCloud.fields:
+        _x = val1.name
+        length = len(_x)
+        buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = val1
+        buff.write(_struct_IBI.pack(_x.offset, _x.datatype, _x.count))
+      _x = self
+      buff.write(_struct_B2I.pack(_x.shape.pointCloud.is_bigendian, _x.shape.pointCloud.point_step, _x.shape.pointCloud.row_step))
+      _x = self.shape.pointCloud.data
+      length = len(_x)
+      # - if encoded as a list instead, serialize as bytes instead of string
+      if type(_x) in [list, tuple]:
+        buff.write(struct.pack('<I%sB'%length, length, *_x))
+      else:
+        buff.write(struct.pack('<I%ss'%length, length, _x))
+      buff.write(_struct_B.pack(self.shape.pointCloud.is_dense))
       length = len(self.attributes)
       buff.write(_struct_I.pack(length))
       for val1 in self.attributes:
@@ -342,7 +491,7 @@ string value
       if self.transform is None:
         self.transform = geometry_msgs.msg.TransformStamped()
       if self.shape is None:
-        self.shape = arm_navigation_msgs.msg.Shape()
+        self.shape = brics_3d_msgs.msg.Shape()
       end = 0
       _x = self
       start = end
@@ -389,6 +538,52 @@ string value
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
         self.shape.vertices.append(val1)
+      _x = self
+      start = end
+      end += 12
+      (_x.shape.pointCloud.header.seq, _x.shape.pointCloud.header.stamp.secs, _x.shape.pointCloud.header.stamp.nsecs,) = _struct_3I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      self.shape.pointCloud.header.frame_id = str[start:end]
+      _x = self
+      start = end
+      end += 8
+      (_x.shape.pointCloud.height, _x.shape.pointCloud.width,) = _struct_2I.unpack(str[start:end])
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.shape.pointCloud.fields = []
+      for i in range(0, length):
+        val1 = sensor_msgs.msg.PointField()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        val1.name = str[start:end]
+        _x = val1
+        start = end
+        end += 9
+        (_x.offset, _x.datatype, _x.count,) = _struct_IBI.unpack(str[start:end])
+        self.shape.pointCloud.fields.append(val1)
+      _x = self
+      start = end
+      end += 9
+      (_x.shape.pointCloud.is_bigendian, _x.shape.pointCloud.point_step, _x.shape.pointCloud.row_step,) = _struct_B2I.unpack(str[start:end])
+      self.shape.pointCloud.is_bigendian = bool(self.shape.pointCloud.is_bigendian)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      start = end
+      end += length
+      self.shape.pointCloud.data = str[start:end]
+      start = end
+      end += 1
+      (self.shape.pointCloud.is_dense,) = _struct_B.unpack(str[start:end])
+      self.shape.pointCloud.is_dense = bool(self.shape.pointCloud.is_dense)
       start = end
       end += 4
       (length,) = _struct_I.unpack(str[start:end])
@@ -413,6 +608,11 @@ string value
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = roslib.message.struct_I
+_struct_IBI = struct.Struct("<IBI")
 _struct_7db = struct.Struct("<7db")
+_struct_B = struct.Struct("<B")
+_struct_3I = struct.Struct("<3I")
 _struct_5I = struct.Struct("<5I")
+_struct_B2I = struct.Struct("<B2I")
+_struct_2I = struct.Struct("<2I")
 _struct_3d = struct.Struct("<3d")

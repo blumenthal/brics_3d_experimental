@@ -132,7 +132,7 @@ public:
 		convertTfTransformToHomogeniousMatrix(tmpTransform, convertedTransform);
 	}
 
-	inline static bool convertShapeToRosMsg(brics_3d::rsg::Shape::ShapePtr shape, arm_navigation_msgs::Shape& convertedShape){
+	inline static bool convertShapeToRosMsg(brics_3d::rsg::Shape::ShapePtr shape, brics_3d_msgs::Shape& convertedShape){
 		LOG(DEBUG) << "convertShapeToRosMsg: ";
 		//		rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr pointCloud(new rsg::PointCloud<brics_3d::PointCloud3D>());
 //		pointCloud = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(shape);
@@ -145,14 +145,14 @@ public:
 
 		if (box !=0) {
 			LOG(DEBUG) << "                 -> Found a new box.";
-			convertedShape.type = arm_navigation_msgs::Shape::BOX;
+			convertedShape.type = brics_3d_msgs::Shape::BOX;
 			convertedShape.dimensions.resize(3);
 			convertedShape.dimensions[0] = box->getSizeX();
 			convertedShape.dimensions[1] = box->getSizeY();
 			convertedShape.dimensions[2] = box->getSizeZ();
 		} else if (cylinder !=0) {
 			LOG(DEBUG) << "                 -> Found a new cylinder.";
-			convertedShape.type = arm_navigation_msgs::Shape::CYLINDER;
+			convertedShape.type = brics_3d_msgs::Shape::CYLINDER;
 			convertedShape.dimensions.resize(2);
 			convertedShape.dimensions[0] = cylinder->getRadius();
 			convertedShape.dimensions[1] = cylinder->getHeight();
@@ -163,10 +163,10 @@ public:
 		return true;
 	}
 
-	inline static bool convertRosMsgToShape(arm_navigation_msgs::Shape shape, brics_3d::rsg::Shape::ShapePtr& convertedShape) {
+	inline static bool convertRosMsgToShape(brics_3d_msgs::Shape shape, brics_3d::rsg::Shape::ShapePtr& convertedShape) {
 		LOG(DEBUG) << "convertRosMsgToShape: ";
 		switch(shape.type) {
-		case arm_navigation_msgs::Shape::BOX: {
+		case brics_3d_msgs::Shape::BOX: {
 			LOG(DEBUG) << "                 -> Found a new box.";
 			brics_3d::rsg::Box::BoxPtr newBox(new brics_3d::rsg::Box());
 			newBox->setSizeX(shape.dimensions[0]);
@@ -175,7 +175,7 @@ public:
 			convertedShape = boost::dynamic_pointer_cast<rsg::Shape>(newBox); // = newBox;
 
 		} break;
-		case arm_navigation_msgs::Shape::CYLINDER: {
+		case brics_3d_msgs::Shape::CYLINDER: {
 			LOG(DEBUG) << "                 -> Found a new cylinder.";
 			brics_3d::rsg::Cylinder::CylinderPtr newCylinder(new brics_3d::rsg::Cylinder());
 			newCylinder->setRadius(shape.dimensions[0]);
@@ -183,10 +183,10 @@ public:
 			convertedShape = newCylinder;
 
 		} break;
-		case arm_navigation_msgs::Shape::SPHERE:
+		case brics_3d_msgs::Shape::SPHERE:
 			LOG(ERROR) << "convertRosMsgToShape: Sphere type not yet supported.";
 			break;
-		case arm_navigation_msgs::Shape::MESH:
+		case brics_3d_msgs::Shape::MESH:
 			LOG(ERROR) << "convertRosMsgToShape: Mesh type not yet supported.";
 			return false;
 		}

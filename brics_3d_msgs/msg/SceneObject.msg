@@ -2,5 +2,5 @@
 uint32 id
 uint32 parentId
 geometry_msgs/TransformStamped transform
-arm_navigation_msgs/Shape shape 
+brics_3d_msgs/Shape shape 
 Attribute[] attributes

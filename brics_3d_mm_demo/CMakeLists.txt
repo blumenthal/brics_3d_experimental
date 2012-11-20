@@ -51,7 +51,7 @@ rosbuild_add_executable(brics_3d_mm_demo
 	src/ROSWrapper.cpp
 	src/SceneGraphToGeomConverter.cpp
 	${brics_mm_ros_PACKAGE_PATH}/src/ompl/OmplWrapper.cpp
-	${brics_3d_ros_PACKAGE_PATH}/src/brics_3d_ros/WorldModelQueryServer.cpp
+#	${brics_3d_ros_PACKAGE_PATH}/src/brics_3d_ros/WorldModelQueryServer.cpp
 )
 
 target_link_libraries(brics_3d_mm_demo

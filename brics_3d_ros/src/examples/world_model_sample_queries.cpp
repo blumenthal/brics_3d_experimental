@@ -179,7 +179,7 @@ int main(int argc, char **argv)
 	addGeometricNodeUpdate.request.attributes.resize(1);
 	addGeometricNodeUpdate.request.attributes[0].key = "name";
 	addGeometricNodeUpdate.request.attributes[0].value = "some_box";
-	addGeometricNodeUpdate.request.shape.type = arm_navigation_msgs::Shape::BOX;
+	addGeometricNodeUpdate.request.shape.type = brics_3d_msgs::Shape::BOX;
 	addGeometricNodeUpdate.request.shape.dimensions.resize(3);
 	addGeometricNodeUpdate.request.shape.dimensions[0] = 0.2;
 	addGeometricNodeUpdate.request.shape.dimensions[1] = 0.6;
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
 	addGeometricNodeUpdate.request.attributes.resize(1);
 	addGeometricNodeUpdate.request.attributes[0].key = "name";
 	addGeometricNodeUpdate.request.attributes[0].value = "some_cylinder";
-	addGeometricNodeUpdate.request.shape.type = arm_navigation_msgs::Shape::CYLINDER;
+	addGeometricNodeUpdate.request.shape.type = brics_3d_msgs::Shape::CYLINDER;
 	addGeometricNodeUpdate.request.shape.dimensions.resize(2);
 	addGeometricNodeUpdate.request.shape.dimensions[0] = 0.1;
 	addGeometricNodeUpdate.request.shape.dimensions[1] = 1.5;
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
 	addGeometricNodeUpdate.request.attributes.resize(1);
 	addGeometricNodeUpdate.request.attributes[0].key = "name";
 	addGeometricNodeUpdate.request.attributes[0].value = "some_other_cylinder";
-	addGeometricNodeUpdate.request.shape.type = arm_navigation_msgs::Shape::CYLINDER;
+	addGeometricNodeUpdate.request.shape.type = brics_3d_msgs::Shape::CYLINDER;
 	addGeometricNodeUpdate.request.shape.dimensions.resize(2);
 	addGeometricNodeUpdate.request.shape.dimensions[0] = 0.2;
 	addGeometricNodeUpdate.request.shape.dimensions[1] = 0.7;

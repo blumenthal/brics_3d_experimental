@@ -2,5 +2,5 @@
 uint32 id
 ---
 time stamp
-arm_navigation_msgs/Shape shape
+brics_3d_msgs/Shape shape
 bool succeeded 

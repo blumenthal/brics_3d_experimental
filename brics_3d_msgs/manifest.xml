@@ -10,8 +10,9 @@
   <url>http://ros.org/wiki/brics_3d_msgs</url>
 
   <depend package="geometry_msgs"/>
-  <depend package="arm_navigation_msgs"/>
-
+  <depend package="sensor_msgs"/>
+  <depend package="tf"/>
+  
 </package>
 
 

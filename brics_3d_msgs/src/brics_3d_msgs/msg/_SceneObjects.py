@@ -2,13 +2,13 @@
 import roslib.message
 import struct
 
-import arm_navigation_msgs.msg
+import sensor_msgs.msg
 import geometry_msgs.msg
 import brics_3d_msgs.msg
 import std_msgs.msg
 
 class SceneObjects(roslib.message.Message):
-  _md5sum = "affe26072ff8a1fa7b933e3a894ce31e"
+  _md5sum = "9f5b6851d0ad5b76e84700f4f2f10dec"
   _type = "brics_3d_msgs/SceneObjects"
   _has_header = False #flag to mark the presence of a Header object
   _full_text = """SceneObject[] sceneObjects
@@ -18,7 +18,7 @@ MSG: brics_3d_msgs/SceneObject
 uint32 id
 uint32 parentId
 geometry_msgs/TransformStamped transform
-arm_navigation_msgs/Shape shape 
+brics_3d_msgs/Shape shape 
 Attribute[] attributes
 
 ================================================================================
@@ -76,11 +76,12 @@ float64 z
 float64 w
 
 ================================================================================
-MSG: arm_navigation_msgs/Shape
+MSG: brics_3d_msgs/Shape
 byte SPHERE=0
 byte BOX=1
 byte CYLINDER=2
 byte MESH=3
+byte POINTCLOUD=4
 
 byte type
 
@@ -110,12 +111,64 @@ float64[] dimensions
 int32[] triangles
 geometry_msgs/Point[] vertices
 
+
+#### define point cloud ####
+
+sensor_msgs/PointCloud2 pointCloud
 ================================================================================
 MSG: geometry_msgs/Point
 # This contains the position of a point in free space
 float64 x
 float64 y
 float64 z
+
+================================================================================
+MSG: sensor_msgs/PointCloud2
+# This message holds a collection of N-dimensional points, which may
+# contain additional information such as normals, intensity, etc. The
+# point data is stored as a binary blob, its layout described by the
+# contents of the "fields" array.
+
+# The point cloud data may be organized 2d (image-like) or 1d
+# (unordered). Point clouds organized as 2d images may be produced by
+# camera depth sensors such as stereo or time-of-flight.
+
+# Time of sensor data acquisition, and the coordinate frame ID (for 3d
+# points).
+Header header
+
+# 2D structure of the point cloud. If the cloud is unordered, height is
+# 1 and width is the length of the point cloud.
+uint32 height
+uint32 width
+
+# Describes the channels and their layout in the binary data blob.
+PointField[] fields
+
+bool    is_bigendian # Is this data bigendian?
+uint32  point_step   # Length of a point in bytes
+uint32  row_step     # Length of a row in bytes
+uint8[] data         # Actual point data, size is (row_step*height)
+
+bool is_dense        # True if there are no invalid points
+
+================================================================================
+MSG: sensor_msgs/PointField
+# This message holds the description of one point entry in the
+# PointCloud2 message format.
+uint8 INT8    = 1
+uint8 UINT8   = 2
+uint8 INT16   = 3
+uint8 UINT16  = 4
+uint8 INT32   = 5
+uint8 UINT32  = 6
+uint8 FLOAT32 = 7
+uint8 FLOAT64 = 8
+
+string name      # Name of field
+uint32 offset    # Offset from start of point struct
+uint8  datatype  # Datatype enumeration, see above
+uint32 count     # How many elements in the field
 
 ================================================================================
 MSG: brics_3d_msgs/Attribute
@@ -200,6 +253,35 @@ string value
         for val3 in _v7.vertices:
           _x = val3
           buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+        _v8 = _v7.pointCloud
+        _v9 = _v8.header
+        buff.write(_struct_I.pack(_v9.seq))
+        _v10 = _v9.stamp
+        _x = _v10
+        buff.write(_struct_2I.pack(_x.secs, _x.nsecs))
+        _x = _v9.frame_id
+        length = len(_x)
+        buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = _v8
+        buff.write(_struct_2I.pack(_x.height, _x.width))
+        length = len(_v8.fields)
+        buff.write(_struct_I.pack(length))
+        for val4 in _v8.fields:
+          _x = val4.name
+          length = len(_x)
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+          _x = val4
+          buff.write(_struct_IBI.pack(_x.offset, _x.datatype, _x.count))
+        _x = _v8
+        buff.write(_struct_B2I.pack(_x.is_bigendian, _x.point_step, _x.row_step))
+        _x = _v8.data
+        length = len(_x)
+        # - if encoded as a list instead, serialize as bytes instead of string
+        if type(_x) in [list, tuple]:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        buff.write(_struct_B.pack(_v8.is_dense))
         length = len(val1.attributes)
         buff.write(_struct_I.pack(length))
         for val2 in val1.attributes:
@@ -230,13 +312,13 @@ string value
         start = end
         end += 8
         (_x.id, _x.parentId,) = _struct_2I.unpack(str[start:end])
-        _v8 = val1.transform
-        _v9 = _v8.header
+        _v11 = val1.transform
+        _v12 = _v11.header
         start = end
         end += 4
-        (_v9.seq,) = _struct_I.unpack(str[start:end])
-        _v10 = _v9.stamp
-        _x = _v10
+        (_v12.seq,) = _struct_I.unpack(str[start:end])
+        _v13 = _v12.stamp
+        _x = _v13
         start = end
         end += 8
         (_x.secs, _x.nsecs,) = _struct_2I.unpack(str[start:end])
@@ -245,53 +327,105 @@ string value
         (length,) = _struct_I.unpack(str[start:end])
         start = end
         end += length
-        _v9.frame_id = str[start:end]
+        _v12.frame_id = str[start:end]
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
         start = end
         end += length
-        _v8.child_frame_id = str[start:end]
-        _v11 = _v8.transform
-        _v12 = _v11.translation
-        _x = _v12
+        _v11.child_frame_id = str[start:end]
+        _v14 = _v11.transform
+        _v15 = _v14.translation
+        _x = _v15
         start = end
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-        _v13 = _v11.rotation
-        _x = _v13
+        _v16 = _v14.rotation
+        _x = _v16
         start = end
         end += 32
         (_x.x, _x.y, _x.z, _x.w,) = _struct_4d.unpack(str[start:end])
-        _v14 = val1.shape
+        _v17 = val1.shape
         start = end
         end += 1
-        (_v14.type,) = _struct_b.unpack(str[start:end])
+        (_v17.type,) = _struct_b.unpack(str[start:end])
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
         pattern = '<%sd'%length
         start = end
         end += struct.calcsize(pattern)
-        _v14.dimensions = struct.unpack(pattern, str[start:end])
+        _v17.dimensions = struct.unpack(pattern, str[start:end])
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
         pattern = '<%si'%length
         start = end
         end += struct.calcsize(pattern)
-        _v14.triangles = struct.unpack(pattern, str[start:end])
+        _v17.triangles = struct.unpack(pattern, str[start:end])
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
-        _v14.vertices = []
+        _v17.vertices = []
         for i in range(0, length):
           val3 = geometry_msgs.msg.Point()
           _x = val3
           start = end
           end += 24
           (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-          _v14.vertices.append(val3)
+          _v17.vertices.append(val3)
+        _v18 = _v17.pointCloud
+        _v19 = _v18.header
+        start = end
+        end += 4
+        (_v19.seq,) = _struct_I.unpack(str[start:end])
+        _v20 = _v19.stamp
+        _x = _v20
+        start = end
+        end += 8
+        (_x.secs, _x.nsecs,) = _struct_2I.unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        _v19.frame_id = str[start:end]
+        _x = _v18
+        start = end
+        end += 8
+        (_x.height, _x.width,) = _struct_2I.unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        _v18.fields = []
+        for i in range(0, length):
+          val4 = sensor_msgs.msg.PointField()
+          start = end
+          end += 4
+          (length,) = _struct_I.unpack(str[start:end])
+          start = end
+          end += length
+          val4.name = str[start:end]
+          _x = val4
+          start = end
+          end += 9
+          (_x.offset, _x.datatype, _x.count,) = _struct_IBI.unpack(str[start:end])
+          _v18.fields.append(val4)
+        _x = _v18
+        start = end
+        end += 9
+        (_x.is_bigendian, _x.point_step, _x.row_step,) = _struct_B2I.unpack(str[start:end])
+        _v18.is_bigendian = bool(_v18.is_bigendian)
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        _v18.data = str[start:end]
+        start = end
+        end += 1
+        (_v18.is_dense,) = _struct_B.unpack(str[start:end])
+        _v18.is_dense = bool(_v18.is_dense)
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
@@ -331,40 +465,69 @@ string value
       for val1 in self.sceneObjects:
         _x = val1
         buff.write(_struct_2I.pack(_x.id, _x.parentId))
-        _v15 = val1.transform
-        _v16 = _v15.header
-        buff.write(_struct_I.pack(_v16.seq))
-        _v17 = _v16.stamp
-        _x = _v17
+        _v21 = val1.transform
+        _v22 = _v21.header
+        buff.write(_struct_I.pack(_v22.seq))
+        _v23 = _v22.stamp
+        _x = _v23
         buff.write(_struct_2I.pack(_x.secs, _x.nsecs))
-        _x = _v16.frame_id
+        _x = _v22.frame_id
         length = len(_x)
         buff.write(struct.pack('<I%ss'%length, length, _x))
-        _x = _v15.child_frame_id
+        _x = _v21.child_frame_id
         length = len(_x)
         buff.write(struct.pack('<I%ss'%length, length, _x))
-        _v18 = _v15.transform
-        _v19 = _v18.translation
-        _x = _v19
+        _v24 = _v21.transform
+        _v25 = _v24.translation
+        _x = _v25
         buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
-        _v20 = _v18.rotation
-        _x = _v20
+        _v26 = _v24.rotation
+        _x = _v26
         buff.write(_struct_4d.pack(_x.x, _x.y, _x.z, _x.w))
-        _v21 = val1.shape
-        buff.write(_struct_b.pack(_v21.type))
-        length = len(_v21.dimensions)
+        _v27 = val1.shape
+        buff.write(_struct_b.pack(_v27.type))
+        length = len(_v27.dimensions)
         buff.write(_struct_I.pack(length))
         pattern = '<%sd'%length
-        buff.write(_v21.dimensions.tostring())
-        length = len(_v21.triangles)
+        buff.write(_v27.dimensions.tostring())
+        length = len(_v27.triangles)
         buff.write(_struct_I.pack(length))
         pattern = '<%si'%length
-        buff.write(_v21.triangles.tostring())
-        length = len(_v21.vertices)
+        buff.write(_v27.triangles.tostring())
+        length = len(_v27.vertices)
         buff.write(_struct_I.pack(length))
-        for val3 in _v21.vertices:
+        for val3 in _v27.vertices:
           _x = val3
           buff.write(_struct_3d.pack(_x.x, _x.y, _x.z))
+        _v28 = _v27.pointCloud
+        _v29 = _v28.header
+        buff.write(_struct_I.pack(_v29.seq))
+        _v30 = _v29.stamp
+        _x = _v30
+        buff.write(_struct_2I.pack(_x.secs, _x.nsecs))
+        _x = _v29.frame_id
+        length = len(_x)
+        buff.write(struct.pack('<I%ss'%length, length, _x))
+        _x = _v28
+        buff.write(_struct_2I.pack(_x.height, _x.width))
+        length = len(_v28.fields)
+        buff.write(_struct_I.pack(length))
+        for val4 in _v28.fields:
+          _x = val4.name
+          length = len(_x)
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+          _x = val4
+          buff.write(_struct_IBI.pack(_x.offset, _x.datatype, _x.count))
+        _x = _v28
+        buff.write(_struct_B2I.pack(_x.is_bigendian, _x.point_step, _x.row_step))
+        _x = _v28.data
+        length = len(_x)
+        # - if encoded as a list instead, serialize as bytes instead of string
+        if type(_x) in [list, tuple]:
+          buff.write(struct.pack('<I%sB'%length, length, *_x))
+        else:
+          buff.write(struct.pack('<I%ss'%length, length, _x))
+        buff.write(_struct_B.pack(_v28.is_dense))
         length = len(val1.attributes)
         buff.write(_struct_I.pack(length))
         for val2 in val1.attributes:
@@ -397,13 +560,13 @@ string value
         start = end
         end += 8
         (_x.id, _x.parentId,) = _struct_2I.unpack(str[start:end])
-        _v22 = val1.transform
-        _v23 = _v22.header
+        _v31 = val1.transform
+        _v32 = _v31.header
         start = end
         end += 4
-        (_v23.seq,) = _struct_I.unpack(str[start:end])
-        _v24 = _v23.stamp
-        _x = _v24
+        (_v32.seq,) = _struct_I.unpack(str[start:end])
+        _v33 = _v32.stamp
+        _x = _v33
         start = end
         end += 8
         (_x.secs, _x.nsecs,) = _struct_2I.unpack(str[start:end])
@@ -412,53 +575,105 @@ string value
         (length,) = _struct_I.unpack(str[start:end])
         start = end
         end += length
-        _v23.frame_id = str[start:end]
+        _v32.frame_id = str[start:end]
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
         start = end
         end += length
-        _v22.child_frame_id = str[start:end]
-        _v25 = _v22.transform
-        _v26 = _v25.translation
-        _x = _v26
+        _v31.child_frame_id = str[start:end]
+        _v34 = _v31.transform
+        _v35 = _v34.translation
+        _x = _v35
         start = end
         end += 24
         (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-        _v27 = _v25.rotation
-        _x = _v27
+        _v36 = _v34.rotation
+        _x = _v36
         start = end
         end += 32
         (_x.x, _x.y, _x.z, _x.w,) = _struct_4d.unpack(str[start:end])
-        _v28 = val1.shape
+        _v37 = val1.shape
         start = end
         end += 1
-        (_v28.type,) = _struct_b.unpack(str[start:end])
+        (_v37.type,) = _struct_b.unpack(str[start:end])
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
         pattern = '<%sd'%length
         start = end
         end += struct.calcsize(pattern)
-        _v28.dimensions = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+        _v37.dimensions = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
         pattern = '<%si'%length
         start = end
         end += struct.calcsize(pattern)
-        _v28.triangles = numpy.frombuffer(str[start:end], dtype=numpy.int32, count=length)
+        _v37.triangles = numpy.frombuffer(str[start:end], dtype=numpy.int32, count=length)
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
-        _v28.vertices = []
+        _v37.vertices = []
         for i in range(0, length):
           val3 = geometry_msgs.msg.Point()
           _x = val3
           start = end
           end += 24
           (_x.x, _x.y, _x.z,) = _struct_3d.unpack(str[start:end])
-          _v28.vertices.append(val3)
+          _v37.vertices.append(val3)
+        _v38 = _v37.pointCloud
+        _v39 = _v38.header
+        start = end
+        end += 4
+        (_v39.seq,) = _struct_I.unpack(str[start:end])
+        _v40 = _v39.stamp
+        _x = _v40
+        start = end
+        end += 8
+        (_x.secs, _x.nsecs,) = _struct_2I.unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        _v39.frame_id = str[start:end]
+        _x = _v38
+        start = end
+        end += 8
+        (_x.height, _x.width,) = _struct_2I.unpack(str[start:end])
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        _v38.fields = []
+        for i in range(0, length):
+          val4 = sensor_msgs.msg.PointField()
+          start = end
+          end += 4
+          (length,) = _struct_I.unpack(str[start:end])
+          start = end
+          end += length
+          val4.name = str[start:end]
+          _x = val4
+          start = end
+          end += 9
+          (_x.offset, _x.datatype, _x.count,) = _struct_IBI.unpack(str[start:end])
+          _v38.fields.append(val4)
+        _x = _v38
+        start = end
+        end += 9
+        (_x.is_bigendian, _x.point_step, _x.row_step,) = _struct_B2I.unpack(str[start:end])
+        _v38.is_bigendian = bool(_v38.is_bigendian)
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        start = end
+        end += length
+        _v38.data = str[start:end]
+        start = end
+        end += 1
+        (_v38.is_dense,) = _struct_B.unpack(str[start:end])
+        _v38.is_dense = bool(_v38.is_dense)
         start = end
         end += 4
         (length,) = _struct_I.unpack(str[start:end])
@@ -484,7 +699,10 @@ string value
       raise roslib.message.DeserializationError(e) #most likely buffer underfill
 
 _struct_I = roslib.message.struct_I
-_struct_4d = struct.Struct("<4d")
+_struct_IBI = struct.Struct("<IBI")
 _struct_b = struct.Struct("<b")
+_struct_B = struct.Struct("<B")
+_struct_B2I = struct.Struct("<B2I")
+_struct_4d = struct.Struct("<4d")
 _struct_2I = struct.Struct("<2I")
 _struct_3d = struct.Struct("<3d")

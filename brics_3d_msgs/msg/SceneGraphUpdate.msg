@@ -29,7 +29,7 @@ uint32 assignedId
 Attribute[] attributes
 
 # Shape data is only used to the ADD_GEOMATIC_NODE command.
-arm_navigation_msgs/Shape shape
+brics_3d_msgs/Shape shape
 
 # Trnasform data is relevant for ADD_TRANSFORM_NODE and SET_TRANSFORM.
 geometry_msgs/TransformStamped transform
