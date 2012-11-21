@@ -37,7 +37,8 @@ rosbuild_add_library(${PROJECT_NAME}
     src/brics_3d_ros/SceneGraphTypeCasts.cpp
     src/brics_3d_ros/WorldModelQueryServer.cpp 
     src/brics_3d_ros/SceneGraphROSCommunicator.cpp
-    src/brics_3d_ros/SceneGraphResentServer.cpp 
+    src/brics_3d_ros/SceneGraphResentServer.cpp
+    src/brics_3d_ros/SceneGraphROSBroadcaster.cpp 
 )
 
 rosbuild_add_executable(world_model_node
