@@ -1,7 +1,7 @@
 <stack>
   <description brief="brics_3d_experimental">brics_3d_experimental</description>
-  <author>Maintained by sblume</author>
-  <license>BSD</license>  
+  <author>Sebastian Blumenthal/blumenthal@gps-stuttgart.de</author>
+  <license>gnu-lgpl-v2.1 modified-bsd</license>  
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/brics_3d_experimental</url>
   <depend stack="ros" />
