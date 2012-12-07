@@ -95,7 +95,7 @@ bool SceneGraphROSBroadcaster::addGeometricNode(unsigned int parentId, unsigned 
 	LOG(DEBUG) << "SceneGraphROSBroadcaster::addGeometricNode";
 	brics_3d_msgs::SceneGraphUpdate message;
 
-	message.command = brics_3d_msgs::SceneGraphUpdate::ADD_GEOMATIC_NODE;
+	message.command = brics_3d_msgs::SceneGraphUpdate::ADD_GEOMETRIC_NODE;
 	message.parentId = parentId;
 	message.forcedId = forcedId;
 	if (forcedId) {

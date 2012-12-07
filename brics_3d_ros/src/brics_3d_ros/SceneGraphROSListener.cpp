@@ -55,7 +55,7 @@ void SceneGraphROSListener::handleSceneGraphUpdate(const brics_3d_msgs::SceneGra
 			doAddTransformNode(update);
 			break;
 
-		case brics_3d_msgs::SceneGraphUpdate::ADD_GEOMATIC_NODE: //FIXME: typo
+		case brics_3d_msgs::SceneGraphUpdate::ADD_GEOMETRIC_NODE:
 			doAddGeometricNode(update);
 			break;
 
