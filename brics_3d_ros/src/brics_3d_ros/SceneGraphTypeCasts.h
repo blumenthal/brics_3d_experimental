@@ -73,7 +73,7 @@ public:
 		}
 	}
 
-	inline static void convertRosMsgToAttributes(std::vector< brics_3d_msgs::Attribute >&  attributes, vector<Attribute>& convertedAttributes) {
+	inline static void convertRosMsgToAttributes(const std::vector< brics_3d_msgs::Attribute >&  attributes, vector<Attribute>& convertedAttributes) {
 		convertedAttributes.clear();
 		for (unsigned int i = 0; i < static_cast<unsigned int>(attributes.size()); ++i) {
 			convertedAttributes.push_back(Attribute(attributes[i].key ,attributes[i].value));
@@ -87,7 +87,7 @@ public:
 		}
 	}
 
-	inline static void convertRosMsgToIds(std::vector< uint32_t >&  ids, vector<unsigned int>& convertedIds) {
+	inline static void convertRosMsgToIds(const std::vector< uint32_t >&  ids, vector<unsigned int>& convertedIds) {
 		convertedIds.resize(ids.size());
 		for (unsigned int i = 0; i < static_cast<unsigned int>(ids.size()); ++i) {
 			convertedIds[i] = ids[i];
@@ -98,7 +98,7 @@ public:
 		//not needed and not possible;
 	}
 
-	inline static void convertRosMsgToTimeStamp(ros::Time& timeStamp, brics_3d::rsg::TimeStamp& convertedTimeStamp) { //here we _have_ to create a new timestamp
+	inline static void convertRosMsgToTimeStamp(const ros::Time& timeStamp, brics_3d::rsg::TimeStamp& convertedTimeStamp) { //here we _have_ to create a new timestamp
 //		if (convertedTimeStamp) {
 //			delete convertedTimeStamp;
 //			convertedTimeStamp = 0;
@@ -126,7 +126,7 @@ public:
 		convertedTransform.transform.rotation.w = tmpTransform.getRotation().getW();
 	}
 
-	inline static void convertRosMsgToTransform(geometry_msgs::TransformStamped transform, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& convertedTransform){
+	inline static void convertRosMsgToTransform(const geometry_msgs::TransformStamped transform, brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr& convertedTransform){
 		tf::StampedTransform tmpTransform;
 		tf::transformStampedMsgToTF(transform, tmpTransform);
 		convertTfTransformToHomogeniousMatrix(tmpTransform, convertedTransform);
