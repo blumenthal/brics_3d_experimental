@@ -42,23 +42,18 @@ rosbuild_add_library(${PROJECT_NAME}
     src/brics_3d_ros/SceneGraphROSListener.cpp 
 )
 
-rosbuild_add_executable(world_model_node
-    src/brics_3d_ros/WorldModelQueryServer.cpp 
-    src/brics_3d_ros/SceneGraphROSCommunicator.cpp
-    src/brics_3d_ros/SceneGraphResentServer.cpp 
-    src/examples/world_model_node.cpp
-)
+rosbuild_add_executable(world_model_node src/examples/world_model_node.cpp)
 IF(USE_OSG)
-    target_link_libraries(world_model_node brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
+    target_link_libraries(world_model_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
 ELSE(USE_OSG)
-    target_link_libraries(world_model_node brics3d_world_model brics3d_util brics3d_core)
+    target_link_libraries(world_model_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core)
 ENDIF(USE_OSG) 
 
-rosbuild_add_executable(world_model_duplication_node src/brics_3d_ros/WorldModelQueryServer.cpp src/brics_3d_ros/SceneGraphROSCommunicator.cpp src/examples/world_model_duplication_node.cpp)
+rosbuild_add_executable(world_model_duplication_node src/examples/world_model_duplication_node.cpp)
 IF(USE_OSG)
-    target_link_libraries(world_model_duplication_node brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
+    target_link_libraries(world_model_duplication_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
 ELSE(USE_OSG)
-    target_link_libraries(world_model_duplication_node brics3d_world_model brics3d_util brics3d_core)
+    target_link_libraries(world_model_duplication_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core)
 ENDIF(USE_OSG) 
 
 rosbuild_add_executable(world_model_sample_queries src/examples/world_model_sample_queries.cpp)

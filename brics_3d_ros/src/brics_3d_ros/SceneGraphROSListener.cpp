@@ -37,7 +37,7 @@ SceneGraphROSListener::~SceneGraphROSListener() {
 }
 
 void SceneGraphROSListener::initialize() {
-	sceneGraphUpdatesSubscriber = node.subscribe("/scene_graph_update", 1000, &SceneGraphROSListener::handleSceneGraphUpdate, this);
+	sceneGraphUpdatesSubscriber = node.subscribe("scene_graph_updates", 1000, &SceneGraphROSListener::handleSceneGraphUpdate, this);
 }
 
 void SceneGraphROSListener::handleSceneGraphUpdate(const brics_3d_msgs::SceneGraphUpdate& update) {

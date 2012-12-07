@@ -22,6 +22,7 @@
 
 #include "../brics_3d_ros/WorldModelQueryServer.h"
 #include "../brics_3d_ros/SceneGraphROSCommunicator.h"
+#include "../brics_3d_ros/SceneGraphROSListener.h"
 
 #include "brics_3d/worldModel/sceneGraph/DotVisualizer.h"
 #include "brics_3d/worldModel/sceneGraph/DotGraphGenerator.h"
@@ -61,6 +62,9 @@ int main(int argc, char **argv)
 //	wmServer.setServiceNameSpace("/worldModel/sampleListner/");
 	wmServer.setServiceNameSpace("/brics_mm/worldModel/");
 	wmServer.initialize();
+
+	brics_3d::rsg::SceneGraphROSListener wmListener(n, wm);
+	wmListener.initialize();
 
 	ros::AsyncSpinner spinner(2);
 	spinner.start();
