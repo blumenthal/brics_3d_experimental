@@ -39,6 +39,7 @@
 #include "brics_3d_msgs/SetTransform.h"
 #include "brics_3d_msgs/DeleteNode.h"
 #include "brics_3d_msgs/AddParent.h"
+#include "brics_3d_msgs/RemoveParent.h"
 
 namespace brics_3d {
 
@@ -58,6 +59,8 @@ public:
 	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
 	bool deleteNode(unsigned int id);
 	bool addParent(unsigned int id, unsigned int parentId);
+	bool removeParent(unsigned int id, unsigned int parentId);
+
 
 //	void addIdToSubGraphBlacklist(unsigned int subGraphId);
 //	void setEnableBlackList(bool enableBlackList);
@@ -109,6 +112,8 @@ protected:
     ros::ServiceClient setTransformClient;
     ros::ServiceClient deleteNodeClient;
     ros::ServiceClient addParentClient;
+    ros::ServiceClient removeParentClient;
+
 
 	brics_3d_msgs::AddNode addNodeUpdate;
 	brics_3d_msgs::AddGroup addGroupUpdate;
@@ -118,6 +123,7 @@ protected:
 	brics_3d_msgs::SetTransform setTransformUpdate;
 	brics_3d_msgs::DeleteNode deleteNodeUpdate;
 	brics_3d_msgs::AddParent addParentUpdate;
+	brics_3d_msgs::AddParent removeParentUpdate;
 
 };
 

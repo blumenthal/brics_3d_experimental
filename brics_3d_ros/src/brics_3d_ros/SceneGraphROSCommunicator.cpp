@@ -298,6 +298,20 @@ bool SceneGraphROSCommunicator::addParent(unsigned int id, unsigned int parentId
 	return true;
 }
 
+bool SceneGraphROSCommunicator::removeParent(unsigned int id, unsigned int parentId) {
+	LOG(DEBUG) << "SceneGraphROSCommunicator: removing parent Node";
+
+	removeParentUpdate.request.id = id;
+	removeParentUpdate.request.parentId = parentId;
+
+	if (!removeParentClient.call(removeParentUpdate)) {
+		LOG(ERROR) << "Failed to call service Remove Parent";
+		return false;
+	}
+
+	return true;
+}
+
 //bool SceneGraphROSCommunicator::resentSceneGraphCallback(brics_3d_msgs::ResentSceneGraph::Request& request, brics_3d_msgs::ResentSceneGraph::Response& response) {
 //	SceneGraphToUpdatesTraverser
 //}

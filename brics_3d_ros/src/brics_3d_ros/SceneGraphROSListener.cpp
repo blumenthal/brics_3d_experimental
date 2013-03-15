@@ -75,6 +75,10 @@ void SceneGraphROSListener::handleSceneGraphUpdate(const brics_3d_msgs::SceneGra
 			doAddParent(update);
 			break;
 
+		case brics_3d_msgs::SceneGraphUpdate::REMOVE_PARENT:
+			doRemoveParent(update);
+			break;
+
 		default:
 			LOG(ERROR) << "SceneGraphROSListener: undefined command type in incoming update message.";
 			break;
@@ -151,6 +155,10 @@ bool SceneGraphROSListener::doDeleteNode(const brics_3d_msgs::SceneGraphUpdate& 
 
 bool SceneGraphROSListener::doAddParent(const brics_3d_msgs::SceneGraphUpdate& update) {
 	return wm->scene.addParent(update.id, update.parentId);
+}
+
+bool SceneGraphROSListener::doRemoveParent(const brics_3d_msgs::SceneGraphUpdate& update) {
+	return wm->scene.removeParent(update.id, update.parentId);
 }
 
 }

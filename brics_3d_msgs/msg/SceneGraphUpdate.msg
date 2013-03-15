@@ -7,6 +7,7 @@ byte SET_NOTE_ATTRIBUTES=4
 byte SET_TRANSFORM=5
 byte DELETE_NOTE=6
 byte ADD_PARENT=7
+byte REMOVE_PARENT=8
 
 # Has one of the above values to specify the kind of update.
 byte command
@@ -28,7 +29,7 @@ uint32 assignedId
 # and SET_NOTE_ATTRIBUTES.
 Attribute[] attributes
 
-# Shape data is only used to the ADD_GEOMATIC_NODE command.
+# Shape data is only used for the ADD_GEOMATIC_NODE command.
 brics_3d_msgs/Shape shape
 
 # Trnasform data is relevant for ADD_TRANSFORM_NODE and SET_TRANSFORM.

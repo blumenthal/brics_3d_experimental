@@ -1,0 +1,5 @@
+#bool removeParent(unsigned int id, unsigned int parentId);
+uint32 id
+uint32 parentId
+---
+bool succeeded

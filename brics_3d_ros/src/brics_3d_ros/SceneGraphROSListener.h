@@ -74,6 +74,7 @@ protected:
     bool doSetTransform(const brics_3d_msgs::SceneGraphUpdate& update);
     bool doDeleteNode(const brics_3d_msgs::SceneGraphUpdate& update);
     bool doAddParent(const brics_3d_msgs::SceneGraphUpdate& update);
+    bool doRemoveParent(const brics_3d_msgs::SceneGraphUpdate& update);
 
 
 	/// The ROS node handle.

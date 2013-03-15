@@ -109,6 +109,10 @@ void WorldModelQueryServer::initialize() {
 	serviceName.str("");
 	serviceName << serviceNameSpace << "addParent";
 	addParentService =  node.advertiseService(serviceName.str(), &WorldModelQueryServer::addParentCallback, this);
+
+	serviceName.str("");
+	serviceName << serviceNameSpace << "removeParent";
+	addParentService =  node.advertiseService(serviceName.str(), &WorldModelQueryServer::removeParentCallback, this);
 }
 
 /*
@@ -286,6 +290,10 @@ bool WorldModelQueryServer::addParentCallback(brics_3d_msgs::AddParent::Request&
 	return response.succeeded;
 }
 
+bool WorldModelQueryServer::removeParentCallback(brics_3d_msgs::RemoveParent::Request& request, brics_3d_msgs::RemoveParent::Response& response) {
+	response.succeeded = wm->scene.removeParent(request.id, request.parentId);
+	return response.succeeded;
+}
 
 }
 

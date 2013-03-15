@@ -44,6 +44,7 @@
 #include "brics_3d_msgs/SetTransform.h"
 #include "brics_3d_msgs/DeleteNode.h"
 #include "brics_3d_msgs/AddParent.h"
+#include "brics_3d_msgs/RemoveParent.h"
 
 namespace brics_3d {
 
@@ -99,7 +100,7 @@ public:
     bool setTransformCallback(brics_3d_msgs::SetTransform::Request& request, brics_3d_msgs::SetTransform::Response& response);
     bool deleteNodeCallback(brics_3d_msgs::DeleteNode::Request& request, brics_3d_msgs::DeleteNode::Response& response);
     bool addParentCallback(brics_3d_msgs::AddParent::Request& request, brics_3d_msgs::AddParent::Response& response);
-
+    bool removeParentCallback(brics_3d_msgs::RemoveParent::Request& request, brics_3d_msgs::RemoveParent::Response& response);
 
 private:
 
@@ -134,6 +135,7 @@ private:
     ros::ServiceServer setTransformService;
     ros::ServiceServer deleteNodeService;
     ros::ServiceServer addParentService;
+    ros::ServiceServer removeParentService;
 
 };
 

@@ -159,6 +159,19 @@ bool SceneGraphROSBroadcaster::addParent(unsigned int id, unsigned int parentId)
 	return true;
 }
 
+bool SceneGraphROSBroadcaster::removeParent(unsigned int id, unsigned int parentId) {
+	LOG(DEBUG) << "SceneGraphROSBroadcaster::removeParent";
+	brics_3d_msgs::SceneGraphUpdate message;
+
+	message.command = brics_3d_msgs::SceneGraphUpdate::REMOVE_PARENT;
+	message.id = id;
+	message.parentId = parentId;
+
+	doSendMessage(message);
+	return true;
+}
+
+
 void SceneGraphROSBroadcaster::doSendMessage(brics_3d_msgs::SceneGraphUpdate& update) {
 	sceneGraphUpdatesPublisher.publish(update);
 }
