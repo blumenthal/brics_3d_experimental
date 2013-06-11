@@ -70,14 +70,14 @@ int main(int argc, char **argv)
 	spinner.start();
 
 	/* intialize data */
-//	serviceName.str("");
-//	serviceName << serviceNameSpace << "resentSceneGraph";
-//	ros::ServiceClient resentSceneGraphClient = n.serviceClient<brics_3d_msgs::ResentSceneGraph>(serviceName.str());
-//	brics_3d_msgs::ResentSceneGraph resentSceneGraphRequest;
-//	resentSceneGraphRequest.request.subGraphRootId = wm->scene.getRootId();
-//	if (!resentSceneGraphClient.call(resentSceneGraphRequest)) {
-//		ROS_ERROR("Could not request to resent secene graph.");
-//	}
+	serviceName.str("");
+	serviceName << serviceNameSpace << "resentSceneGraph";
+	ros::ServiceClient resentSceneGraphClient = n.serviceClient<brics_3d_msgs::ResentSceneGraph>(serviceName.str());
+	brics_3d_msgs::ResentSceneGraph resentSceneGraphRequest;
+	resentSceneGraphRequest.request.subGraphRootId = wm->scene.getRootId();
+	if (!resentSceneGraphClient.call(resentSceneGraphRequest)) {
+		ROS_ERROR("Could not request to resent secene graph.");
+	}
 
 	ROS_INFO("Ready.");
 

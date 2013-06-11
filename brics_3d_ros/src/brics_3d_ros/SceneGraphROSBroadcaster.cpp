@@ -91,6 +91,11 @@ bool SceneGraphROSBroadcaster::addTransformNode(unsigned int parentId, unsigned 
 	return true;
 }
 
+bool SceneGraphROSBroadcaster::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+	LOG(ERROR) << "SceneGraphROSBroadcaster: adding UncertainTransformNode - this is not yet implemented!";
+	return false;
+}
+
 bool SceneGraphROSBroadcaster::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSBroadcaster::addGeometricNode";
 	brics_3d_msgs::SceneGraphUpdate message;
@@ -135,6 +140,12 @@ bool SceneGraphROSBroadcaster::setTransform(unsigned int id, IHomogeneousMatrix4
 	doSendMessage(message);
 	return true;
 }
+
+bool SceneGraphROSBroadcaster::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	LOG(ERROR) << "SceneGraphROSBroadcaster: updating UncertainTransformNode - this is not yet implemented!";
+	return false;
+}
+
 
 bool SceneGraphROSBroadcaster::deleteNode(unsigned int id) {
 	LOG(DEBUG) << "SceneGraphROSBroadcaster::deleteNode";

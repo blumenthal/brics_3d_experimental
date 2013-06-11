@@ -196,6 +196,10 @@ bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned
 	return true;
 }
 
+bool SceneGraphROSCommunicator::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+	LOG(ERROR) << "SceneGraphROSCommunicator: adding UncertainTransformNode - this is not yet implemented!";
+	return false;
+}
 
 bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding GeometricNode with parent ID: " << parentId;
@@ -269,6 +273,11 @@ bool SceneGraphROSCommunicator::setTransform(unsigned int id, IHomogeneousMatrix
 	}
 
 	return true;
+}
+
+bool SceneGraphROSCommunicator::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+	LOG(ERROR) << "SceneGraphROSCommunicator: updating UncertainTransformNode - this is not yet implemented!";
+	return false;
 }
 
 bool SceneGraphROSCommunicator::deleteNode(unsigned int id) {
