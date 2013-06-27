@@ -1,0 +1,6 @@
+bin
+build
+lib
+.cproject
+.project
+data/office_scene_data.bag

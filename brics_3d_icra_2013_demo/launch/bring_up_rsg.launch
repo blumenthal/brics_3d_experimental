@@ -1,0 +1,24 @@
+<launch>
+	
+	<!-- Start the data set -->
+	<node pkg="rosbag" type="rosbag" name="rosbag" args="play -l $(find brics_3d_icra_2013_demo)/data/office_scene_data.bag" /> 
+
+	<!-- Start the perception node for the world model -->
+	<param name="publishDebugTF" type="bool" value="true"/>
+	<param name="writeDebugGraphToFile" type="bool" value="true"/>
+	<param name="enableDynamicROI" type="bool" value="true"/>
+
+	<node pkg="brics_3d_icra_2013_demo" type="scene_analyzer" name="scene_analyzer" output="screen">
+		<rosparam command="load" file="$(find brics_3d_icra_2013_demo)/cfg/simpleSceneAnalysisConfiguration.yaml" />
+		<rosparam command="load" file="$(find brics_3d_icra_2013_demo)/cfg/roiConfiguration.yaml" />
+	</node>
+
+	<!-- Optianally start a BRICS_MM planning node with a local copy of  -->
+ 	<!-- <node pkg="brics_3d_mm_demo" type="brics_3d_mm_demo" name="brics_3d_mm_demo"/> -->
+
+	<!-- To view the graph structure: 
+		cd ~/.ros
+		gthumb current_graph.gv.svg
+	-->
+
+</launch>

@@ -1,0 +1,7 @@
+roiBoxSizeX: "1.5"
+roiBoxSizeY: "1.5"
+roiBoxSizeZ: "1.5"
+roiCenterX: "0.2"
+roiCenterY: "-0.4"
+roiCenterZ: "1.1"
+roiPitch: "0.8"

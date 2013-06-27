@@ -1,0 +1,18 @@
+<package>
+  <description brief="brics_3d_icra_2013_demo">
+
+     brics_3d_icra_2013_demo
+
+  </description>
+  <author>sblume</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/brics_3d_icra_2013_demo</url>
+
+  <depend package="pcl"/>
+  <depend package="pcl_ros"/>
+  <depend package="brics_3d_ros"/>
+
+</package>
+
+
