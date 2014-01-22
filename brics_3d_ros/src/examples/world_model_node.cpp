@@ -40,7 +40,7 @@ using brics_3d::Logger;
 double rotationValue = 0;
 brics_3d::Timer timer;
 
-void rotateFrame(brics_3d::WorldModel* wm, unsigned int transformNodeId) {
+void rotateFrame(brics_3d::WorldModel* wm, brics_3d::rsg::Id transformNodeId) {
 
 	Eigen::Vector3d axis(1,1,1);
 	axis.normalize();
@@ -93,13 +93,13 @@ int main(int argc, char **argv)
 	if(testRotation) {
 		brics_3d::rsg::TimeStamp stamp(timer.getCurrentTime());
 
-		unsigned int id1;
+		brics_3d::rsg::Id id1;
 		vector<brics_3d::rsg::Attribute> attributes;
 		attributes.push_back(brics_3d::rsg::Attribute("name","testTransform1"));
 		brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform1(new brics_3d::HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0.5, 0, 0));
 		wm->scene.addTransformNode(wm->scene.getRootId(), id1, attributes, transform1, stamp);
 
-		unsigned int id2;
+		brics_3d::rsg::Id id2;
 		attributes.clear();
 		attributes.push_back(brics_3d::rsg::Attribute("name","testTransform2"));
 		brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform2(new brics_3d::HomogeneousMatrix44());

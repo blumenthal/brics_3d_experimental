@@ -23,6 +23,7 @@
 #include "../brics_3d_ros/WorldModelQueryServer.h"
 #include "../brics_3d_ros/SceneGraphROSCommunicator.h"
 #include "../brics_3d_ros/SceneGraphROSListener.h"
+#include "../brics_3d_ros/SceneGraphTypeCasts.h"
 
 #include "brics_3d/worldModel/sceneGraph/DotVisualizer.h"
 #include "brics_3d/worldModel/sceneGraph/DotGraphGenerator.h"
@@ -74,7 +75,8 @@ int main(int argc, char **argv)
 	serviceName << serviceNameSpace << "resentSceneGraph";
 	ros::ServiceClient resentSceneGraphClient = n.serviceClient<brics_3d_msgs::ResentSceneGraph>(serviceName.str());
 	brics_3d_msgs::ResentSceneGraph resentSceneGraphRequest;
-	resentSceneGraphRequest.request.subGraphRootId = wm->scene.getRootId();
+//	resentSceneGraphRequest.request.subGraphRootId = wm->scene.getRootId();
+	brics_3d::rsg::SceneGraphTypeCasts::convertIdToRosMsg(wm->scene.getRootId(), resentSceneGraphRequest.request.subGraphRootId);
 	if (!resentSceneGraphClient.call(resentSceneGraphRequest)) {
 		ROS_ERROR("Could not request to resent secene graph.");
 	}

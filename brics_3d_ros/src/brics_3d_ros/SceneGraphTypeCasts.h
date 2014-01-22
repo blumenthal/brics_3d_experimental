@@ -80,17 +80,27 @@ public:
 		}
 	}
 
-	inline static void convertIdsToRosMsg(vector<unsigned int>& ids, std::vector< uint32_t >&  convertedIds) {
+	inline static void convertIdToRosMsg(brics_3d::rsg::Id id,  uint32_t& convertedId) {
+		convertedId = brics_3d::rsg::uuidToUnsignedInt(id);
+	}
+
+	inline static void convertRosMsgToId(uint32_t id,  brics_3d::rsg::Id& convertedId) {
+		convertedId = id;
+	}
+
+	inline static void convertIdsToRosMsg(vector<brics_3d::rsg::Id>& ids, std::vector< uint32_t >&  convertedIds) {
 		convertedIds.resize(ids.size());
 		for (unsigned int i = 0; i < static_cast<unsigned int>(ids.size()); ++i) {
-			convertedIds[i] = ids[i];
+//			convertedIds[i] = ids[i];
+			convertIdToRosMsg(ids[i], convertedIds[i]);
 		}
 	}
 
-	inline static void convertRosMsgToIds(const std::vector< uint32_t >&  ids, vector<unsigned int>& convertedIds) {
+	inline static void convertRosMsgToIds(const std::vector< uint32_t >&  ids, vector<brics_3d::rsg::Id>& convertedIds) {
 		convertedIds.resize(ids.size());
 		for (unsigned int i = 0; i < static_cast<unsigned int>(ids.size()); ++i) {
-			convertedIds[i] = ids[i];
+//			convertedIds[i] = ids[i];
+			convertRosMsgToId(ids[i], convertedIds[i]);
 		}
 	}
 
@@ -232,8 +242,10 @@ public:
 	}
 
 	inline static bool convertSceneObjectToRosMsg(brics_3d::SceneObject sceneObject, brics_3d_msgs::SceneObject& convertedSceneObject, std::string originFrameId) {
-		convertedSceneObject.id = sceneObject.id;
-		convertedSceneObject.parentId = sceneObject.parentId;
+//		convertedSceneObject.id = sceneObject.id;
+//		convertedSceneObject.parentId = sceneObject.parentId;
+		convertIdToRosMsg(sceneObject.id, convertedSceneObject.id);
+		convertIdToRosMsg(sceneObject.parentId, convertedSceneObject.parentId);
 		convertAttributesToRosMsg(sceneObject.attributes, convertedSceneObject.attributes);
 
 		std::stringstream objectSceneFrameID;

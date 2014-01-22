@@ -18,9 +18,12 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)    
 IF(USE_OSG)
-    FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)
+    FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer osgUtil osgText )
     ADD_DEFINITIONS(-DENABLE_OSG)
 ENDIF(USE_OSG)  
+
+find_package(Eigen REQUIRED)
+include_directories(${EIGEN_INCLUDE_DIRS})
 
 #uncomment if you have defined messages
 #rosbuild_genmsg()
@@ -44,14 +47,16 @@ rosbuild_add_library(${PROJECT_NAME}
 
 rosbuild_add_executable(world_model_node src/examples/world_model_node.cpp)
 IF(USE_OSG)
-    target_link_libraries(world_model_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
+    target_link_libraries(world_model_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core 
+    ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG}  ${OSGUTIL_LIBRARY_DEBUG} ${OSGTEXT_LIBRARY_DEBUG})
 ELSE(USE_OSG)
     target_link_libraries(world_model_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core)
 ENDIF(USE_OSG) 
 
 rosbuild_add_executable(world_model_duplication_node src/examples/world_model_duplication_node.cpp)
 IF(USE_OSG)
-    target_link_libraries(world_model_duplication_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG})
+    target_link_libraries(world_model_duplication_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core 
+    ${OSG_LIBRARY_DEBUG} ${OSGGA_LIBRARY_DEBUG} ${OSGVIEWER_LIBRARY_DEBUG}  ${OSGUTIL_LIBRARY_DEBUG} ${OSGTEXT_LIBRARY_DEBUG})
 ELSE(USE_OSG)
     target_link_libraries(world_model_duplication_node ${PROJECT_NAME} brics3d_world_model brics3d_util brics3d_core)
 ENDIF(USE_OSG) 

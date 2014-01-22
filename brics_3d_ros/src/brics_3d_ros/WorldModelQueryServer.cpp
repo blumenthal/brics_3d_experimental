@@ -120,13 +120,14 @@ void WorldModelQueryServer::initialize() {
  */
 
 bool WorldModelQueryServer::getRootIdCallback(brics_3d_msgs::GetRootId::Request& request, brics_3d_msgs::GetRootId::Response& response) {
-	response.rootId = wm->scene.getRootId();
+//	response.rootId = wm->scene.getRootId();
+	SceneGraphTypeCasts::convertIdToRosMsg(wm->scene.getRootId(), response.rootId);
 	return true;
 }
 
 bool WorldModelQueryServer::getNodesCallback(brics_3d_msgs::GetNodes::Request& request, brics_3d_msgs::GetNodes::Response& response) {
 	vector<brics_3d::rsg::Attribute> attributes;
-	vector<unsigned int> ids;
+	vector<Id> ids;
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	response.succeeded = wm->scene.getNodes(attributes, ids);
 	SceneGraphTypeCasts::convertIdsToRosMsg(ids, response.ids);
@@ -141,14 +142,14 @@ bool WorldModelQueryServer::getNodeAttributesCallback(brics_3d_msgs::GetNodeAttr
 }
 
 bool WorldModelQueryServer::getNodeParentsCallback(brics_3d_msgs::GetNodeParents::Request& request, brics_3d_msgs::GetNodeParents::Response& response) {
-	vector<unsigned int> parentIds;
+	vector<brics_3d::rsg::Id> parentIds;
 	response.succeeded = wm->scene.getNodeParents(request.id, parentIds);
 	SceneGraphTypeCasts::convertIdsToRosMsg(parentIds, response.parentIds);
 	return response.succeeded;
 }
 
 bool WorldModelQueryServer::getGroupChildrenCallback(brics_3d_msgs::GetGroupChildren::Request& request, brics_3d_msgs::GetGroupChildren::Response& response) {
-	vector<unsigned int> childIds;
+	vector<brics_3d::rsg::Id> childIds;
 
 	response.succeeded = wm->scene.getGroupChildren(request.id, childIds);
 
@@ -198,35 +199,37 @@ bool WorldModelQueryServer::getTransformForNodeCallback(brics_3d_msgs::GetTransf
 
 bool WorldModelQueryServer::addNodeCallback(brics_3d_msgs::AddNode::Request& request, brics_3d_msgs::AddNode::Response& response) {
 	vector<brics_3d::rsg::Attribute> attributes;
-	unsigned int assignedId;
-	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+	brics_3d::rsg::Id assignedId;
+	//assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+	SceneGraphTypeCasts::convertRosMsgToId(request.assignedId, assignedId);
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	response.succeeded = wm->scene.addNode(request.parentId, assignedId, attributes, request.forcedId);
 
-	response.assignedId = assignedId;
+//	response.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, response.assignedId);
 	return response.succeeded;
 }
 
 bool WorldModelQueryServer::addGroupCallback(brics_3d_msgs::AddGroup::Request& request, brics_3d_msgs::AddGroup::Response& response) {
-	unsigned int assignedId;
+	brics_3d::rsg::Id assignedId;
 	vector<brics_3d::rsg::Attribute> attributes;
-	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+	SceneGraphTypeCasts::convertRosMsgToId(request.assignedId, assignedId); //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
 	response.succeeded = wm->scene.addGroup(request.parentId, assignedId, attributes, request.forcedId);
 
-	response.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, response.assignedId);
 	return response.succeeded;
 }
 
 bool WorldModelQueryServer::addTransformNodeCallback(brics_3d_msgs::AddTransformNode::Request& request, brics_3d_msgs::AddTransformNode::Response& response) {
-	unsigned int assignedId;
+	brics_3d::rsg::Id assignedId;
 	vector<brics_3d::rsg::Attribute> attributes;
 	IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new brics_3d::HomogeneousMatrix44());
 	TimeStamp timeStamp;
-	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+	SceneGraphTypeCasts::convertRosMsgToId(request.assignedId, assignedId); //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
 
 	SceneGraphTypeCasts::convertRosMsgToAttributes(request.attributes, attributes);
@@ -234,16 +237,16 @@ bool WorldModelQueryServer::addTransformNodeCallback(brics_3d_msgs::AddTransform
 	SceneGraphTypeCasts::convertRosMsgToTimeStamp(request.stamp, timeStamp);
 	response.succeeded = wm->scene.addTransformNode(request.parentId, assignedId, attributes, transform, timeStamp, request.forcedId);
 
-	response.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, response.assignedId);
 	return response.succeeded;
 }
 
 bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometricNode::Request& request, brics_3d_msgs::AddGeometricNode::Response& response) {
-	unsigned int assignedId;
+	brics_3d::rsg::Id assignedId;
 	vector<brics_3d::rsg::Attribute> attributes;
 	Shape::ShapePtr shape;
 	TimeStamp timeStamp;
-	assignedId = request.assignedId; //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
+	SceneGraphTypeCasts::convertRosMsgToId(request.assignedId, assignedId); //This is an [in, out] parameter. Input ignored by default. Only iff forcedId is set to true than this value will be taken as input.
 
 	LOG(DEBUG) << "WorldModelQueryServer: adding GeometricNode with parent ID: " << request.parentId;
 
@@ -255,7 +258,7 @@ bool WorldModelQueryServer::addGeometricNodeCallback(brics_3d_msgs::AddGeometric
 	SceneGraphTypeCasts::convertRosMsgToTimeStamp(request.stamp, timeStamp);
 	response.succeeded = wm->scene.addGeometricNode(request.parentId, assignedId, attributes, shape, timeStamp, request.forcedId);
 
-	response.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, response.assignedId);
 	return response.succeeded;
 }
 

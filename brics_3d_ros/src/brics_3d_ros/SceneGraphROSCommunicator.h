@@ -51,17 +51,17 @@ public:
 	virtual ~SceneGraphROSCommunicator();
 
 	/* implemetntations of observer interface */
-	bool addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
-	bool addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId = false);
-	bool addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
-	bool addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
-	bool addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
-	bool setNodeAttributes(unsigned int id, vector<Attribute> newAttributes);
-	bool setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
-	bool setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
-	bool deleteNode(unsigned int id);
-	bool addParent(unsigned int id, unsigned int parentId);
-	bool removeParent(unsigned int id, unsigned int parentId);
+	bool addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
+	bool addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId = false);
+	bool addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId = false);
+	bool addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId = false);
+	bool addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId = false);
+	bool setNodeAttributes(Id id, vector<Attribute> newAttributes);
+	bool setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp);
+	bool setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp);
+	bool deleteNode(Id id);
+	bool addParent(Id id, Id parentId);
+	bool removeParent(Id id, Id parentId);
 
 
 //	void addIdToSubGraphBlacklist(unsigned int subGraphId);
@@ -82,7 +82,7 @@ protected:
 	 * Subgraphs in this list (spefifies be the ID of the subgrapghs root node) will be ignored.
 	 * To use this feature make shure enableBlackList is set to true;
 	 */
-	std::vector<unsigned int> subGraphBlackList;
+	std::vector<Id> subGraphBlackList;
 
 	bool enableBlackList;
 

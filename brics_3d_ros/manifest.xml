@@ -8,9 +8,10 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/brics_3d_ros</url>
-  <depend package="eigen" /> 
+  <!--<depend package="eigen" /> -->  <!-- for electric -->
+  <rosdep name="eigen" />             <!-- for fuerte -->
+
   <depend package="brics_3d"/>
-  <!--<depend package="BRICS_3D"/>-->
   <depend package="brics_3d_msgs"/>
 
   <export>

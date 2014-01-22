@@ -116,17 +116,19 @@ void SceneGraphROSCommunicator::initialize() {
 
 }
 
-bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool SceneGraphROSCommunicator::addNode(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding Node";
 
 	//TODO: check if alredy there?
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addNodeUpdate.request.attributes);
-	addNodeUpdate.request.parentId = parentId;
+//	addNodeUpdate.request.parentId = parentId;
+	SceneGraphTypeCasts::convertIdToRosMsg(parentId, addNodeUpdate.request.parentId);
 
 	/* We want to enforce generation of a new node with exactly this assignedId ID.
 	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
 	 */
-	addNodeUpdate.request.assignedId = assignedId;
+//	addNodeUpdate.request.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, addNodeUpdate.request.assignedId);
 	addNodeUpdate.request.forcedId = true;
 
 	if (!addNodeCallbackClient.call(addNodeUpdate)) {
@@ -134,25 +136,28 @@ bool SceneGraphROSCommunicator::addNode(unsigned int parentId, unsigned int& ass
 		return false;
 	}
 
-	if (assignedId != addNodeUpdate.response.assignedId) { //Should be the same as we use forced IDs
-		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addNodeUpdate.response.assignedId;
+	Id remoteAssignedId;
+	SceneGraphTypeCasts::convertRosMsgToId(addNodeUpdate.response.assignedId, remoteAssignedId);
+	if (assignedId != remoteAssignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << remoteAssignedId;
 	}
-	assignedId = addNodeUpdate.response.assignedId;
+	assignedId = remoteAssignedId;
 
 
 	return true;
 }
 
-bool SceneGraphROSCommunicator::addGroup(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, bool forcedId) {
+bool SceneGraphROSCommunicator::addGroup(Id parentId, Id& assignedId, vector<Attribute> attributes, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding Group";
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addGroupUpdate.request.attributes);
-	addGroupUpdate.request.parentId = parentId;
+//	addGroupUpdate.request.parentId = parentId;
+	SceneGraphTypeCasts::convertIdToRosMsg(parentId, addGroupUpdate.request.parentId);
 
 	/* We want to enforce generation of a new node with exactly this assignedId ID.
 	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
 	 */
-	addGroupUpdate.request.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, addGroupUpdate.request.assignedId);
 	addGroupUpdate.request.forcedId = true;
 
 	if (!addGroupCallbackClient.call(addGroupUpdate)) {
@@ -160,27 +165,30 @@ bool SceneGraphROSCommunicator::addGroup(unsigned int parentId, unsigned int& as
 		return false;
 	}
 
-	if (assignedId != addGroupUpdate.response.assignedId) { //Should be the same as we use forced IDs
-		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addGroupUpdate.response.assignedId;
+	Id remoteAssignedId;
+	SceneGraphTypeCasts::convertRosMsgToId(addGroupUpdate.response.assignedId, remoteAssignedId);
+	if (assignedId != remoteAssignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << remoteAssignedId;
 	}
 	assignedId = addGroupUpdate.response.assignedId;
 
 	return true;
 }
 
-bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
+bool SceneGraphROSCommunicator::addTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding TransformNode";
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(attributes, addTransformNodeUpdate.request.attributes);
 	SceneGraphTypeCasts::convertTransformToRosMsg(transform, addTransformNodeUpdate.request.transform);
 //	SceneGraphTypeCasts::convertTimeStampToRosMsg(); //FIXME
-	addTransformNodeUpdate.request.parentId = parentId;
+//	addTransformNodeUpdate.request.parentId = parentId;
+	SceneGraphTypeCasts::convertIdToRosMsg(parentId, addTransformNodeUpdate.request.parentId);
 	addTransformNodeUpdate.request.stamp = ros::Time::now();
 
 	/* We want to enforce generation of a new node with exactly this assignedId ID.
 	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
 	 */
-	addTransformNodeUpdate.request.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, addTransformNodeUpdate.request.assignedId);
 	addTransformNodeUpdate.request.forcedId = true;
 
 	if (!addTransformNodeCallbackClient.call(addTransformNodeUpdate)) {
@@ -188,20 +196,22 @@ bool SceneGraphROSCommunicator::addTransformNode(unsigned int parentId, unsigned
 		return false;
 	}
 
-	if (assignedId != addTransformNodeUpdate.response.assignedId) { //Should be the same as we use forced IDs
-		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addTransformNodeUpdate.response.assignedId;
+	Id remoteAssignedId;
+	SceneGraphTypeCasts::convertRosMsgToId(addTransformNodeUpdate.response.assignedId, remoteAssignedId);
+	if (assignedId != remoteAssignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << remoteAssignedId;
 	}
 	assignedId = addTransformNodeUpdate.response.assignedId;
 
 	return true;
 }
 
-bool SceneGraphROSCommunicator::addUncertainTransformNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
+bool SceneGraphROSCommunicator::addUncertainTransformNode(Id parentId, Id& assignedId, vector<Attribute> attributes, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp, bool forcedId) {
 	LOG(ERROR) << "SceneGraphROSCommunicator: adding UncertainTransformNode - this is not yet implemented!";
 	return false;
 }
 
-bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned int& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
+bool SceneGraphROSCommunicator::addGeometricNode(Id parentId, Id& assignedId, vector<Attribute> attributes, Shape::ShapePtr shape, TimeStamp timeStamp, bool forcedId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding GeometricNode with parent ID: " << parentId;
 
 	bool noSharing = false;
@@ -225,13 +235,14 @@ bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned
 		return false;
 	}
 
-	addGeometricNodeUpdate.request.parentId = parentId;
+//	addGeometricNodeUpdate.request.parentId = parentId;
+	SceneGraphTypeCasts::convertIdToRosMsg(parentId, addGeometricNodeUpdate.request.parentId);
 	addGeometricNodeUpdate.request.stamp = ros::Time::now(); //FIXME
 
 	/* We want to enforce generation of a new node with exactly this assignedId ID.
 	 * Otherwise subsequent syncs would fail due to inconsistend IDs...
 	 */
-	addGeometricNodeUpdate.request.assignedId = assignedId;
+	SceneGraphTypeCasts::convertIdToRosMsg(assignedId, addGeometricNodeUpdate.request.assignedId);
 	addGeometricNodeUpdate.request.forcedId = true;
 
 	if (!addGeometricNodeClient.call(addGeometricNodeUpdate)) {
@@ -239,17 +250,20 @@ bool SceneGraphROSCommunicator::addGeometricNode(unsigned int parentId, unsigned
 		return false;
 	}
 
-	if (assignedId != addGeometricNodeUpdate.response.assignedId) { //Should be the same as we use forced IDs
-		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << addGeometricNodeUpdate.response.assignedId;
+	Id remoteAssignedId;
+	SceneGraphTypeCasts::convertRosMsgToId(addGeometricNodeUpdate.response.assignedId, remoteAssignedId);
+	if (assignedId != remoteAssignedId) { //Should be the same as we use forced IDs
+		LOG(WARNING) << "SceneGraphROSCommunicator: Inconsistency of IDs detected. Should be: " << assignedId << " but is: " << remoteAssignedId;
 	}
 	return true;
 }
 
-bool SceneGraphROSCommunicator::setNodeAttributes(unsigned int id, vector<Attribute> newAttributes) {
+bool SceneGraphROSCommunicator::setNodeAttributes(Id id, vector<Attribute> newAttributes) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: setting Attributes";
 
 	SceneGraphTypeCasts::convertAttributesToRosMsg(newAttributes, setNodeAttributesUpdate.request.newAttributes);
-	setNodeAttributesUpdate.request.id = id;
+//	setNodeAttributesUpdate.request.id = id;
+	SceneGraphTypeCasts::convertIdToRosMsg(id, setNodeAttributesUpdate.request.id);
 
 	if (!setNodeAttributesClient.call(setNodeAttributesUpdate)) {
 		LOG(ERROR) << "Failed to call service Set Node Attributes";
@@ -259,12 +273,13 @@ bool SceneGraphROSCommunicator::setNodeAttributes(unsigned int id, vector<Attrib
 	return true;
 }
 
-bool SceneGraphROSCommunicator::setTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
+bool SceneGraphROSCommunicator::setTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, TimeStamp timeStamp) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: updating Transform";
 
 	SceneGraphTypeCasts::convertTransformToRosMsg(transform, setTransformUpdate.request.transform);
 
-	setTransformUpdate.request.id = id;
+//	setTransformUpdate.request.id = id;
+	SceneGraphTypeCasts::convertIdToRosMsg(id, setTransformUpdate.request.id);
 	setTransformUpdate.request.stamp = ros::Time::now(); //FIXME
 
 	if (!setTransformClient.call(setTransformUpdate)) {
@@ -275,15 +290,16 @@ bool SceneGraphROSCommunicator::setTransform(unsigned int id, IHomogeneousMatrix
 	return true;
 }
 
-bool SceneGraphROSCommunicator::setUncertainTransform(unsigned int id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
+bool SceneGraphROSCommunicator::setUncertainTransform(Id id, IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transform, ITransformUncertainty::ITransformUncertaintyPtr uncertainty, TimeStamp timeStamp) {
 	LOG(ERROR) << "SceneGraphROSCommunicator: updating UncertainTransformNode - this is not yet implemented!";
 	return false;
 }
 
-bool SceneGraphROSCommunicator::deleteNode(unsigned int id) {
+bool SceneGraphROSCommunicator::deleteNode(Id id) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: deleting Node";
 
-	deleteNodeUpdate.request.id = id;
+//	deleteNodeUpdate.request.id = id;
+	SceneGraphTypeCasts::convertIdToRosMsg(id, deleteNodeUpdate.request.id);
 
 	if (!deleteNodeClient.call(deleteNodeUpdate)) {
 		LOG(ERROR) << "Failed to call service Delete Node";
@@ -293,11 +309,13 @@ bool SceneGraphROSCommunicator::deleteNode(unsigned int id) {
 	return true;
 }
 
-bool SceneGraphROSCommunicator::addParent(unsigned int id, unsigned int parentId) {
+bool SceneGraphROSCommunicator::addParent(Id id, Id parentId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: adding parent Node";
 
-	addParentUpdate.request.id = id;
-	addParentUpdate.request.parentId = parentId;
+//	addParentUpdate.request.id = id;
+//	addParentUpdate.request.parentId = parentId;
+	SceneGraphTypeCasts::convertIdToRosMsg(id, addParentUpdate.request.id);
+	SceneGraphTypeCasts::convertIdToRosMsg(parentId, addParentUpdate.request.parentId);
 
 	if (!addParentClient.call(addParentUpdate)) {
 		LOG(ERROR) << "Failed to call service Add Parent";
@@ -307,11 +325,13 @@ bool SceneGraphROSCommunicator::addParent(unsigned int id, unsigned int parentId
 	return true;
 }
 
-bool SceneGraphROSCommunicator::removeParent(unsigned int id, unsigned int parentId) {
+bool SceneGraphROSCommunicator::removeParent(Id id, Id parentId) {
 	LOG(DEBUG) << "SceneGraphROSCommunicator: removing parent Node";
 
-	removeParentUpdate.request.id = id;
-	removeParentUpdate.request.parentId = parentId;
+//	removeParentUpdate.request.id = id;
+//	removeParentUpdate.request.parentId = parentId;
+	SceneGraphTypeCasts::convertIdToRosMsg(id, removeParentUpdate.request.id);
+	SceneGraphTypeCasts::convertIdToRosMsg(parentId, removeParentUpdate.request.parentId);
 
 	if (!removeParentClient.call(removeParentUpdate)) {
 		LOG(ERROR) << "Failed to call service Remove Parent";
@@ -326,7 +346,7 @@ bool SceneGraphROSCommunicator::removeParent(unsigned int id, unsigned int paren
 //}
 
 
-//void SceneGraphROSCommunicator::addIdToSubGraphBlacklist(unsigned int subGraphId) {
+//void SceneGraphROSCommunicator::addIdToSubGraphBlacklist(Id subGraphId) {
 //	subGraphBlackList.push_back(subGraphId);
 //}
 //
