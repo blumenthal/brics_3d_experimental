@@ -41,9 +41,9 @@ public:
 	virtual ~RoiManager();
 
 	void configure(brics_3d::ParameterSet parameters);
-	void setData(std::vector<unsigned int>& inputDataIds); //Input: where to hook
+	void setData(std::vector<brics_3d::rsg::Id>& inputDataIds); //Input: where to hook
 	void execute();
-	void getData(std::vector<unsigned int>& newDataIds);
+	void getData(std::vector<brics_3d::rsg::Id>& newDataIds);
 
 private:
 

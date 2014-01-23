@@ -39,7 +39,7 @@ void RoiAdapter::configure(brics_3d::ParameterSet parameters) {
 
 }
 
-void RoiAdapter::setData(std::vector<unsigned int>& inputDataIds) {
+void RoiAdapter::setData(std::vector<brics_3d::rsg::Id>& inputDataIds) {
 	this->inputDataIds = inputDataIds; //make a copy
 }
 
@@ -55,11 +55,11 @@ void RoiAdapter::execute() {
 	double newZ = 0;
 	double scaleFactor = 4;//3;//4;//2;//10;	/* make dimensions a bit more relax (4 is good) */
 	double increment = 0.1;
-	unsigned int existingRoiBoxId = inputDataIds[existingRoiBoxIdInputIndex];
-	unsigned int tfBox1Id = 0;
+	brics_3d::rsg::Id existingRoiBoxId = inputDataIds[existingRoiBoxIdInputIndex];
+	brics_3d::rsg::Id tfBox1Id = 0;
 	vector<brics_3d::rsg::Attribute> tmpAttributes;
 
-	std::vector<unsigned int> parents;
+	std::vector<brics_3d::rsg::Id> parents;
 	wm->scene.getNodeParents(existingRoiBoxId, parents);
 	assert(parents.size() == 1);
 	tfBox1Id = parents[0];
@@ -93,7 +93,7 @@ void RoiAdapter::execute() {
 
 	} else {
 
-		unsigned int percievedObjectBoundingBoxId = inputDataIds[percievedObjectBoundingBoxIdInputIndex];
+		brics_3d::rsg::Id percievedObjectBoundingBoxId = inputDataIds[percievedObjectBoundingBoxIdInputIndex];
 
 		for (unsigned int i = 0; i < inputDataIds.size(); ++i) {
 			LOG(INFO) << "inputDataIds[" << i << "] = " << inputDataIds[i];
@@ -124,7 +124,7 @@ void RoiAdapter::execute() {
 	brics_3d::rsg::Box::BoxPtr newBox(new brics_3d::rsg::Box(newX, newY, newZ));
 	wm->scene.getNodeAttributes(existingRoiBoxId, tmpAttributes);
 
-	unsigned int newBoxId = 0;
+	brics_3d::rsg::Id newBoxId = 0;
 	wm->scene.addGeometricNode(tfBox1Id, newBoxId, tmpAttributes, newBox, brics_3d::rsg::TimeStamp(timer.getCurrentTime()));
 	LOG(DEBUG) << "Adjusted ROI Box added with ID " << newBoxId << " to parent with ID " << tfBox1Id;
 	outputDataIds.clear();
@@ -135,7 +135,7 @@ void RoiAdapter::execute() {
 
 }
 
-void RoiAdapter::getData(std::vector<unsigned int>& newDataIds) {
+void RoiAdapter::getData(std::vector<brics_3d::rsg::Id>& newDataIds) {
 	newDataIds = this->outputDataIds;
 }
 

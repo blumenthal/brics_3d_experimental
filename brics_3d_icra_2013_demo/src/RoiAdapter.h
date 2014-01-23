@@ -38,9 +38,9 @@ public:
 	virtual ~RoiAdapter();
 
 	void configure(brics_3d::ParameterSet parameters);
-	void setData(std::vector<unsigned int>& inputDataIds); 	//Input: ID0: bounding box by perception result  ID1: wich box to addjust
+	void setData(std::vector<brics_3d::rsg::Id>& inputDataIds); 	//Input: ID0: bounding box by perception result  ID1: wich box to addjust
 	void execute();
-	void getData(std::vector<unsigned int>& newDataIds); 	//Output: the box id that forms the ROI
+	void getData(std::vector<brics_3d::rsg::Id>& newDataIds); 	//Output: the box id that forms the ROI
 
 	/* data conventions */
 	const static unsigned int existingRoiBoxIdInputIndex = 0;

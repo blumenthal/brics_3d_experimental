@@ -73,8 +73,8 @@ void SceneAssociation::execute() {
 
 	LOG(INFO) << "SceneAssociation: Trying to associate.";
 
-	unsigned int sensorRootId;
-	unsigned int sceneRootId;
+	brics_3d::rsg::Id sensorRootId;
+	brics_3d::rsg::Id sceneRootId;
 	assert(inputDataIds.size()>=2);
 	sensorRootId = inputDataIds[percievedObjectsSubGraphRootIndex];
 	sceneRootId = inputDataIds[sceneObjectsSubGraphRootIndex];
@@ -85,7 +85,7 @@ void SceneAssociation::execute() {
 	/* A) Find percieved scene objects */
 	brics_3d::rsg::AttributeFinder attributeFinder;
 	attributeFinder.setQueryAttributes(queryAttributes);
-	vector<unsigned int> percivedResultIds;
+	vector<brics_3d::rsg::Id> percivedResultIds;
 	wm->scene.executeGraphTraverser(&attributeFinder, sensorRootId);
 	for (unsigned int i = 0; i < static_cast<unsigned int>(attributeFinder.getMatchingNodes().size()) ; ++i) {
 		percivedResultIds.push_back((*attributeFinder.getMatchingNodes()[i]).getId());
@@ -93,7 +93,7 @@ void SceneAssociation::execute() {
 	LOG(DEBUG) << "Number of found percieved scene objects: " << percivedResultIds.size();
 
 	/* B) Find existing scene objects */
-	vector<unsigned int> sceneObjectsResultIds;
+	vector<brics_3d::rsg::Id> sceneObjectsResultIds;
 	attributeFinder.reset();
 	queryAttributes.clear();
 	queryAttributes.push_back(sceneObjectTag); 
@@ -186,14 +186,14 @@ void SceneAssociation::execute() {
 			LOG(INFO) << "SceneAssociation: Inserting a new scene object";
 			IHomogeneousMatrix44::IHomogeneousMatrix44Ptr transformSceneToPervievedObject;
 			wm->scene.getTransformForNode(percivedResultIds[i], sceneRootId, TimeStamp(timer.getCurrentTime()), transformSceneToPervievedObject);
-			unsigned int newSceneObjectId;
+			brics_3d::rsg::Id newSceneObjectId;
 			vector<brics_3d::rsg::Attribute> tmpAttributes;
 			wm->scene.getNodeAttributes(percivedResultIds[i], tmpAttributes); // we take over all attributes
 			tmpAttributes.push_back(Attribute("debugInfo","scnObj"));
 			wm->scene.addTransformNode(sceneRootId, newSceneObjectId, tmpAttributes, transformSceneToPervievedObject, TimeStamp(timer.getCurrentTime())); //Assumption scene is the parent of _this_ tarnadform
 
 			/* we will take over all children */
-			vector <unsigned int> children;
+			vector <brics_3d::rsg::Id> children;
 			wm->scene.getGroupChildren(percivedResultIds[i], children);
 			for (unsigned int childIndex = 0; childIndex < children.size(); ++childIndex) {
 				wm->scene.addParent(children[childIndex], newSceneObjectId);

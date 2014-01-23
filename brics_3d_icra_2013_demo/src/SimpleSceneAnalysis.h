@@ -53,9 +53,9 @@ public:
 	virtual ~SimpleSceneAnalysis();
 
 	void configure(brics_3d::ParameterSet parameters);
-	void setData(std::vector<unsigned int>& inputDataIds); //NOTE: There is a contract/convention on meaning of IDs
+	void setData(std::vector<brics_3d::rsg::Id>& inputDataIds); //NOTE: There is a contract/convention on meaning of IDs
 	void execute();
-	void getData(std::vector<unsigned int>& newDataIds);
+	void getData(std::vector<brics_3d::rsg::Id>& newDataIds);
 
 	void cleanUp();
 
@@ -66,8 +66,8 @@ private:
 	brics_3d::Benchmark* timingBenchmark;
 
 	/// Hint which point cloud is is from previous cycle.
-	unsigned int lastFilteredPointCloudId;
-	std::vector<unsigned int> nextCycleDeletionList;
+	brics_3d::rsg::Id lastFilteredPointCloudId;
+	std::vector<brics_3d::rsg::Id> nextCycleDeletionList;
 
 	/// For stats & debugging
 	int count;

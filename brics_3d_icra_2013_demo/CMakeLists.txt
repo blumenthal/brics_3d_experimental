@@ -19,11 +19,11 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 rosbuild_find_ros_package(brics_3d)
 rosbuild_find_ros_package(brics_3d_ros)
 
-FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)
+#FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)
   
 OPTION(USE_OSG "Enable Open Scene Graph" OFF)    
 IF(USE_OSG)
-    FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer)
+    FIND_PACKAGE(OpenSceneGraph COMPONENTS osgGA osgUtil osgViewer osgUtil osgText)
     ADD_DEFINITIONS(-DENABLE_OSG)
 ENDIF(USE_OSG)  
 
@@ -36,7 +36,7 @@ ENDIF(USE_OSG)
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
 #target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
+rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 #rosbuild_add_executable(example examples/example.cpp)
 #target_link_libraries(example ${PROJECT_NAME})
@@ -64,6 +64,8 @@ IF(USE_OSG)
         ${OSG_LIBRARY_DEBUG}
         ${OSGGA_LIBRARY_DEBUG}
         ${OSGVIEWER_LIBRARY_DEBUG}
+        ${OSGUTIL_LIBRARY_DEBUG}
+    	${OSGTEXT_LIBRARY_DEBUG}
      )
 ELSE(USE_OSG)
     target_link_libraries(scene_analyzer brics3d_world_model brics3d_util brics3d_algorithm brics3d_core  
@@ -76,3 +78,4 @@ ELSE(USE_OSG)
      )
 ENDIF(USE_OSG)       
 
+rosbuild_link_boost(scene_analyzer thread)

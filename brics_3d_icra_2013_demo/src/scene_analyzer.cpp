@@ -110,7 +110,7 @@ public:
 		completeCycleTimer.reset();
 
 		vector<brics_3d::rsg::Attribute> tmpAttributes;
-		std::vector<unsigned int> tmpResultIds;
+		std::vector<brics_3d::rsg::Id> tmpResultIds;
 
 		/*** RAW DATA ***/
 
@@ -131,8 +131,8 @@ public:
 		tmpAttributes.push_back(Attribute("name","sensor"));
 		wm->scene.getNodes(tmpAttributes, tmpResultIds); // find node
 		assert(tmpResultIds.size() == 1);
-		unsigned int sensorGroupId = tmpResultIds[0];
-		unsigned int currentPointCloudId = 0;
+		brics_3d::rsg::Id sensorGroupId = tmpResultIds[0];
+		brics_3d::rsg::Id currentPointCloudId = 0;
 		tmpAttributes.clear();
 		tmpAttributes.push_back(Attribute("name","raw_point_cloud"));
 //		tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
@@ -147,8 +147,8 @@ public:
 
 		/* Do the hard work */
 		timer.reset();
-		std::vector<unsigned int> inputIds;
-		std::vector<unsigned int> outputIds;
+		std::vector<brics_3d::rsg::Id> inputIds;
+		std::vector<brics_3d::rsg::Id> outputIds;
 		inputIds.push_back(currentPointCloudId);
 		perceptionBlock->setData(inputIds);
 		perceptionBlock->execute();
@@ -158,8 +158,8 @@ public:
 
 		timer.reset();
 		if(enableDynamicROI) {
-			std::vector<unsigned int> roiInputIds;
-			std::vector<unsigned int> roiOutputIds;
+			std::vector<brics_3d::rsg::Id> roiInputIds;
+			std::vector<brics_3d::rsg::Id> roiOutputIds;
 			roiInputIds.resize(1);
 			tmpAttributes.clear();
 			tmpAttributes.push_back(Attribute("name","roi_box"));
@@ -176,7 +176,7 @@ public:
 		LOG(INFO) << "Timer: Dynamic ROI processing time took " << timer.getElapsedTime() << "[ms]";
 
 		timer.reset();
-		std::vector<unsigned int> associationInputIds;
+		std::vector<brics_3d::rsg::Id> associationInputIds;
 		associationInputIds.resize(2);
 		tmpAttributes.clear();
 		tmpAttributes.push_back(Attribute("name","sensor"));
@@ -235,9 +235,10 @@ public:
 		std::stringstream objectSceneFrameID;
 		for (unsigned int i = 0; i < static_cast<unsigned int>(resultObjects.size()); ++i) {
 			brics_3d_msgs::SceneObject tmpSceneObject;
-			tmpSceneObject.id = resultObjects[i].id;
-			tmpSceneObject.parentId = resultObjects[i].parentId;
-
+//			tmpSceneObject.id = resultObjects[i].id;
+//			tmpSceneObject.parentId = resultObjects[i].parentId;
+			SceneGraphTypeCasts::convertIdToRosMsg(resultObjects[i].id, tmpSceneObject.id);
+			SceneGraphTypeCasts::convertIdToRosMsg(resultObjects[i].parentId, tmpSceneObject.parentId);
 
 			SceneGraphTypeCasts::convertTransformToRosMsg(resultObjects[i].transform, tmpTransformMsg);
 			tmpTransformMsg.header.stamp = ros::Time::now();
@@ -289,7 +290,7 @@ public:
 	brics_3d::rsg::DotVisualizer* dbgObserver;
 
 	/// Hint which point cloud is is from previous cycle.
-	unsigned int lastPointCloudId;
+	brics_3d::rsg::Id lastPointCloudId;
 
 	/// For stats & debugging
 	int count;
@@ -429,7 +430,7 @@ int main (int argc, char** argv) {
 	sceneAnalyzer.roiBlock->configure(roiParameters);
 
 	/* Add the roi to WM */
-	std::vector<unsigned int> roiInput;
+	std::vector<brics_3d::rsg::Id> roiInput;
 	roiInput.push_back(sceneAnalyzer.wm->getRootNodeId());
 	sceneAnalyzer.roiBlock->setData(roiInput);
 	sceneAnalyzer.roiBlock->execute();

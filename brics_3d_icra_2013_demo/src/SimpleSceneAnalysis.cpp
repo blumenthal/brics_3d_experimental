@@ -110,7 +110,7 @@ void SimpleSceneAnalysis::configure(brics_3d::ParameterSet parameters) {
 	}
 }
 
-void SimpleSceneAnalysis::setData(std::vector<unsigned int>& inputDataIds){
+void SimpleSceneAnalysis::setData(std::vector<brics_3d::rsg::Id>& inputDataIds){
 	this->inputDataIds = inputDataIds; //make a copy
 }
 
@@ -127,7 +127,7 @@ void SimpleSceneAnalysis::execute(){
 	/* retrive a proper point cloud */
 	Shape::ShapePtr inputShape;
 	TimeStamp inputTime;
-	unsigned int pointCloudId = inputDataIds[0];
+	brics_3d::rsg::Id pointCloudId = inputDataIds[0];
 	wm->scene.getGeometry(pointCloudId, inputShape, inputTime);// retrieve a point cloud
 	rsg::PointCloud<brics_3d::PointCloud3D>::PointCloudPtr inputPointCloudContainer(new rsg::PointCloud<brics_3d::PointCloud3D>());
 	inputPointCloudContainer = boost::dynamic_pointer_cast<PointCloud<brics_3d::PointCloud3D> >(inputShape);
@@ -137,11 +137,11 @@ void SimpleSceneAnalysis::execute(){
 		return;
 	}
 
-	vector<unsigned int> parentIds;
+	vector<brics_3d::rsg::Id> parentIds;
 	wm->scene.getNodeParents(pointCloudId, parentIds);
 	assert(parentIds.size() >= 1);
-//	unsigned int dataParentId = wm->getRootNodeId();
-	unsigned int dataParentId = parentIds[0]; // here we take the first, however this ID might be better an input parameter to dissolve disambiguities
+//	brics_3d::rsg::Id dataParentId = wm->getRootNodeId();
+	brics_3d::rsg::Id dataParentId = parentIds[0]; // here we take the first, however this ID might be better an input parameter to dissolve disambiguities
 
 
 
@@ -159,7 +159,7 @@ void SimpleSceneAnalysis::execute(){
 	timingBenchmark->output << timer.getElapsedTime() << "\t";
 	LOG(INFO) << "Timer: Subsampling took " << timer.getElapsedTime() << "[ms]";
 
-	unsigned int subsampledPointCloudId = 0;
+	brics_3d::rsg::Id subsampledPointCloudId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","subsampled_point_cloud"));
 //		tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
@@ -170,14 +170,14 @@ void SimpleSceneAnalysis::execute(){
 	/*** ROI EXTRACTION ***/
 
 	/* query world model for relevant box ROI data */
-	vector<unsigned int> resultIds;
+	vector<brics_3d::rsg::Id> resultIds;
 	Shape::ShapePtr resultShape;
 	TimeStamp resultTime;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","roi_box"));
 	wm->scene.getNodes(tmpAttributes, resultIds); // find node
 	assert(resultIds.size() == 1);
-	unsigned int boxResultId = resultIds[0];
+	brics_3d::rsg::Id boxResultId = resultIds[0];
 	LOG(DEBUG) << "Found ID for label roi_box " << boxResultId;
 
 	wm->scene.getGeometry(boxResultId, resultShape, resultTime); // retrieve geometric data
@@ -206,7 +206,7 @@ void SimpleSceneAnalysis::execute(){
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","roi_box_filtered_point_cloud"));
 //		tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
-	unsigned int currentFilteredPointCloudId = 0;
+	brics_3d::rsg::Id currentFilteredPointCloudId = 0;
 	wm->scene.addGeometricNode(dataParentId, currentFilteredPointCloudId, tmpAttributes, boxROIPointCloudContainer, TimeStamp(timer.getCurrentTime()));
 	wm->scene.deleteNode(lastFilteredPointCloudId);
 
@@ -224,7 +224,7 @@ void SimpleSceneAnalysis::execute(){
 	timingBenchmark->output << timer.getElapsedTime() << "\t";
 	LOG(INFO) << "Timer: Subsampling took " << timer.getElapsedTime() << "[ms]";
 
-	unsigned int subsampledPointCloudId = 0;
+	brics_3d::rsg::Id subsampledPointCloudId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","subsampled_point_cloud"));
 //		tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
@@ -274,7 +274,7 @@ void SimpleSceneAnalysis::execute(){
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_without_dominant_plane"));
 	tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
-	unsigned int currentSegmentedPointCloudId = 0;
+	brics_3d::rsg::Id currentSegmentedPointCloudId = 0;
 	wm->scene.addGeometricNode(dataParentId, currentSegmentedPointCloudId, tmpAttributes, pointCloudWithoutDominantPlaneContainer, TimeStamp(timer.getCurrentTime()));
 	nextCycleDeletionList.push_back(currentSegmentedPointCloudId);
 
@@ -288,7 +288,7 @@ void SimpleSceneAnalysis::execute(){
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_dominant_plane"));
 	tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
-	unsigned int planePointCloudId = 0;
+	brics_3d::rsg::Id planePointCloudId = 0;
 	wm->scene.addGeometricNode(dataParentId, planePointCloudId, tmpAttributes, pointCloudDominantPlaneContainer, TimeStamp(timer.getCurrentTime()));
 	nextCycleDeletionList.push_back(planePointCloudId);
 
@@ -298,8 +298,8 @@ void SimpleSceneAnalysis::execute(){
 	brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr planeTransform(new brics_3d::HomogeneousMatrix44(1,0,0, 0,1,0, 0,0,1, 0,0,0));
 	boundingBoxExtractor->computeOrientedBoundingBox(pointCloudDominantPlaneContainer->data.get(), planeTransform.get(), resultPlaneDimensions); //overrides old transform obove
 	brics_3d::rsg::Box::BoxPtr planeBoundingBox(new brics_3d::rsg::Box(resultPlaneDimensions.getX(), resultPlaneDimensions.getY(), resultPlaneDimensions.getZ()/2.0));
-	unsigned int tfPlaneBBoxId = 0;
-	unsigned int planeBBoxId = 0;
+	brics_3d::rsg::Id tfPlaneBBoxId = 0;
+	brics_3d::rsg::Id planeBBoxId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","plane_tf"));
 //	tmpAttributes.push_back(Attribute("transformType","static"));
@@ -321,7 +321,7 @@ void SimpleSceneAnalysis::execute(){
 	newMeshContainer->data->addTriangle(brics_3d::Point3D(-resultPlaneDimensions.getX()/2.0,-resultPlaneDimensions.getY()/2.0,0),
 			brics_3d::Point3D(-resultPlaneDimensions.getX()/2.0,resultPlaneDimensions.getY()/2.0,0),
 			brics_3d::Point3D(resultPlaneDimensions.getX()/2.0,resultPlaneDimensions.getY()/2.0,0));
-	unsigned int planeMeshId = 0;
+	brics_3d::rsg::Id planeMeshId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","plane_mesh"));
 	tmpAttributes.push_back(Attribute("shapeType","Mesh"));
@@ -349,7 +349,7 @@ void SimpleSceneAnalysis::execute(){
 	LOG(INFO) << extractedClusters.size() << " clusters found.";
 
 	/* add all clusters to wm */
-	unsigned int clusterGroupId = 0;
+	brics_3d::rsg::Id clusterGroupId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","point_cloud_clusters"));
 //		tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
@@ -357,7 +357,7 @@ void SimpleSceneAnalysis::execute(){
 	nextCycleDeletionList.push_back(clusterGroupId); // we will delete all the clusters within next cycle
 
 	stringstream name;
-	unsigned int currentClusterId = 0;
+	brics_3d::rsg::Id currentClusterId = 0;
 	timer.reset();
 	for (unsigned int i = 0; i < extractedClusters.size(); ++i) {
 		brics_3d::PointCloud3D::PointCloud3DPtr clusterCloud(extractedClusters[i]);
@@ -383,7 +383,7 @@ void SimpleSceneAnalysis::execute(){
 		LOG(INFO) << "BoundingBoxVolume = " << boundingBoxVolume << "m³";
 
 		/* add TF + Box */
-		unsigned int tfBBoxId = 0;
+		brics_3d::rsg::Id tfBBoxId = 0;
 		tmpAttributes.clear();
 		tmpAttributes.push_back(Attribute("name","cluster_tf"));
 //			tmpAttributes.push_back(Attribute("debugInfo","no_visualization"));
@@ -392,7 +392,7 @@ void SimpleSceneAnalysis::execute(){
 		if ( (boundingBoxVolume > boundingBoxVolumefeatureLowerLimit) && (
 				boundingBoxVolume < boundingBoxVolumefeatureUpperLimit)) {
 
-			unsigned int bBoxId = 0;
+			brics_3d::rsg::Id bBoxId = 0;
 			tmpAttributes.clear();
 			tmpAttributes.push_back(Attribute("name","cluster_bbox"));
 			tmpAttributes.push_back(Attribute("shapeType","Box"));
@@ -418,7 +418,7 @@ void SimpleSceneAnalysis::execute(){
 //			brics_3d::IHomogeneousMatrix44::IHomogeneousMatrix44Ptr clusterRotation(new brics_3d::HomogeneousMatrix44());
 //			pcaExtractor->computeRotationMatrix(eigenvectors, eigenvalues, clusterRotation.get());
 //
-//			unsigned int rotBBoxId = 0;
+//			brics_3d::rsg::Id rotBBoxId = 0;
 //			tmpAttributes.clear();
 //			tmpAttributes.push_back(Attribute("name","cluster_pca_tf"));
 //			wm->scene.addTransformNode(tfBBoxId, rotBBoxId, tmpAttributes, clusterRotation, brics_3d::rsg::TimeStamp(timer.getCurrentTime()));
@@ -434,7 +434,7 @@ void SimpleSceneAnalysis::execute(){
 	count++;
 }
 
-void SimpleSceneAnalysis::getData(std::vector<unsigned int>& newDataIds){
+void SimpleSceneAnalysis::getData(std::vector<brics_3d::rsg::Id>& newDataIds){
 	newDataIds = this->outputDataIds;
 }
 

@@ -76,7 +76,7 @@ void RoiManager::configure(brics_3d::ParameterSet parameters) {
 	}
 }
 
-void RoiManager::setData(std::vector<unsigned int>& inputDataIds) {
+void RoiManager::setData(std::vector<brics_3d::rsg::Id>& inputDataIds) {
 	this->inputDataIds = inputDataIds; //make a copy
 }
 
@@ -87,7 +87,7 @@ void RoiManager::execute() {
 		return;
 	}
 
-	unsigned int rootId = inputDataIds[0];
+	brics_3d::rsg::Id rootId = inputDataIds[0];
 
 	Eigen::AngleAxis<double> rotation(roiPitch, Eigen::Vector3d(1,0,0));
 	Transform3d transformation;
@@ -96,8 +96,8 @@ void RoiManager::execute() {
 	transformation.rotate(rotation);
 	brics_3d::HomogeneousMatrix44::IHomogeneousMatrix44Ptr transform(new brics_3d::HomogeneousMatrix44(&transformation));
 
-	unsigned int tfBox1Id = 0;
-	unsigned int Box1Id = 0;
+	brics_3d::rsg::Id tfBox1Id = 0;
+	brics_3d::rsg::Id Box1Id = 0;
 	vector<brics_3d::rsg::Attribute> tmpAttributes;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","roi_box_tf"));
@@ -113,13 +113,13 @@ void RoiManager::execute() {
 	LOG(DEBUG) << "ROI Box added with ID " << Box1Id;
 
 	/* Here comes a basic robot skeleton */
-	unsigned int tfWorldToRobotId = 0;
+	brics_3d::rsg::Id tfWorldToRobotId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","world_to_robot_tf"));
 	brics_3d::HomogeneousMatrix44::IHomogeneousMatrix44Ptr initialWorldToRobotTransform(new brics_3d::HomogeneousMatrix44());
 	wm->scene.addTransformNode(wm->scene.getRootId(), tfWorldToRobotId, tmpAttributes, initialWorldToRobotTransform, brics_3d::rsg::TimeStamp(timer.getCurrentTime()));
 
-	unsigned int tfRobotToSensorId = 0;
+	brics_3d::rsg::Id tfRobotToSensorId = 0;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","robot_to_sensor_tf"));
 	brics_3d::HomogeneousMatrix44::IHomogeneousMatrix44Ptr initialRobotToSensorTransform(new brics_3d::HomogeneousMatrix44());
@@ -129,14 +129,14 @@ void RoiManager::execute() {
 
 
 	/* We will add a hook for the processing data */
-	unsigned int sensorGroupId;
+	brics_3d::rsg::Id sensorGroupId;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","sensor"));
 	wm->scene.addGroup(tfRobotToSensorId, sensorGroupId, tmpAttributes);
 	LOG(DEBUG) << "Sensor group added with ID " << sensorGroupId;
 
 	/* We will add a hook for the scene objects */
-	unsigned int sceneObjectsGroupId;
+	brics_3d::rsg::Id sceneObjectsGroupId;
 	tmpAttributes.clear();
 	tmpAttributes.push_back(Attribute("name","sceneObjects"));
 	wm->scene.addGroup(wm->scene.getRootId(), sceneObjectsGroupId, tmpAttributes);
@@ -144,7 +144,7 @@ void RoiManager::execute() {
 
 }
 
-void RoiManager::getData(std::vector<unsigned int>& newDataIds) {
+void RoiManager::getData(std::vector<brics_3d::rsg::Id>& newDataIds) {
 	newDataIds = this->outputDataIds;
 }
 
